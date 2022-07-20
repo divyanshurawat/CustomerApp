@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1027585998893",
+    "project_id": "webwire-7e467",
+    "storage_bucket": "webwire-7e467.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027585998893:android:8beb0fec3917c59caeb8a4",
+        "android_client_info": {
+          "package_name": "eShop.multivendor.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1027585998893-1quls95tahisptrndb7eblk3u9mslg57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCya7RGdbYrCzFMRp4AHrvLpKyzb-IuohA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1027585998893-1quls95tahisptrndb7eblk3u9mslg57.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
