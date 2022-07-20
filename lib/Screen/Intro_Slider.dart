@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Helper/Color.dart';
+import 'Login.dart';
 
 class IntroSlider extends StatefulWidget {
   const IntroSlider({Key? key}) : super(key: key);
@@ -186,7 +187,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                     Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const SignInUpAcc()),
+                          builder: (context) => const Login()),
                     );
                   } else {
                     _currentPage = _currentPage + 1;

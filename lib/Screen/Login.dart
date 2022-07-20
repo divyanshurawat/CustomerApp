@@ -597,7 +597,29 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       ),
     );
   }
-
+  skipSignInBtn() {
+    return Container(
+      padding: const EdgeInsets.only(top: 13),
+      alignment: Alignment.topRight,
+      child: CupertinoButton(
+        child: Container(
+            width: 60,
+            height: 50,
+            alignment: FractionalOffset.center,
+            decoration: const BoxDecoration(
+              color: colors.whiteTemp,
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: Text(getTranslated(context, 'SKIP_SIGNIN_LBL')!,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                    color: colors.primary, fontWeight: FontWeight.bold))),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+        },
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -616,6 +638,13 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          skipSignInBtn(),
+                        ],
+                      ),
+
                       getLogo(),
                       signInTxt(),
                       signInSubTxt(),

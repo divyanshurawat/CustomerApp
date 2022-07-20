@@ -55,13 +55,13 @@ shadow() {
 
 placeHolder(double height) {
   return const AssetImage(
-    'assets/images/placeholder.png',
+    'assets/images/StepLogoTransparent.png',
   );
 }
 
 erroWidget(double size) {
   return Image.asset(
-    'assets/images/placeholder.png',
+    'assets/images/StepLogoTransparent.png',
     height: size,
     width: size,
   );

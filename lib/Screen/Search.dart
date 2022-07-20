@@ -1078,7 +1078,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(7.0),
                       child: sellerList[index].seller_profile == ''
                           ? Image.asset(
-                              'assets/images/placeholder.png',
+                              'assets/images/StepLogoTransparent.png',
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,
@@ -1429,7 +1429,7 @@ class _SuggestionList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(7.0),
                     child: suggestion.image == ''
                         ? Image.asset(
-                            'assets/images/placeholder.png',
+                            'assets/images/StepLogoTransparent.png',
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

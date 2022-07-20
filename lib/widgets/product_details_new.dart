@@ -4692,7 +4692,7 @@ class StateItem extends State<ProductDetail1> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(7.0),
               child: widget.model!.seller_profile == ''
                   ? Image.asset(
-                      'assets/images/placeholder.png',
+                      'assets/images/StepLogoTransparent.png',
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,

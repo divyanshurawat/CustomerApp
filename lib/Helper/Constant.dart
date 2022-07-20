@@ -21,8 +21,8 @@ const double textFontSize16 = 16;
 const double circularBorderRadius5 = 5;
 const double circularBorderRadius10 = 10;
 
-const String baseUrl = 'https://itatoms.tech/eshop/app/v1/api/';
-const String jwtKey = '65c9cd19cd138f19ddf2f6320c7a802ee936c548';
+const String baseUrl = 'http://machineyantra.fluttercoders.com/app/v1/api/';
+const String jwtKey = '0ef848aca33d1035f837e7eb4aa8d45664230049';
 
 const String BANK_DETAIL = 'Bank Details:\n' +
     'Account No :123XXXXX\n' +

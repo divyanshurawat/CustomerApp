@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage>
                   ? Padding(
                       padding:
                           const EdgeInsets.only(top: 20, right: 10, left: 10),
-                      child: _getOfferImage(index),
+                      child: Text(""),
                     )
                   : Container(),
             ],
@@ -1457,24 +1457,24 @@ class _HomePageState extends State<HomePage>
     return GestureDetector(
       child: FadeInImage(
           fadeInDuration: const Duration(milliseconds: 150),
-          image: CachedNetworkImageProvider(slider.image!),
+          image: CachedNetworkImageProvider("hgj"),
           height: height,
           //width: double.maxFinite,
           fit: BoxFit.fitWidth,
-          imageErrorBuilder: (context, error, stackTrace) => SvgPicture.asset(
-                'assets/images/sliderph.svg',
-                fit: BoxFit.fill,
+          imageErrorBuilder: (context, error, stackTrace) => Image.asset(
+                'assets/images/StepLogoTransparent.png',
+                fit: BoxFit.scaleDown,
                 height: height,
                 color: colors.primary,
               ),
           placeholderErrorBuilder: (context, error, stackTrace) =>
-              SvgPicture.asset(
-                'assets/images/sliderph.svg',
-                fit: BoxFit.fill,
+              Image.asset(
+                'assets/images/StepLogoTransparent.png',
+                fit: BoxFit.scaleDown,
                 height: height,
                 color: colors.primary,
               ),
-          placeholder: AssetImage('${imagePath}sliderph.png')),
+          placeholder: AssetImage('${imagePath}StepLogoTransparent.png')),
       onTap: () async {
         int curSlider = context.read<HomeProvider>().curSlider;
 
