@@ -38,6 +38,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';
+import 'Dashboard.dart';
 import 'Login.dart';
 import 'ProductList.dart';
 import 'SectionList.dart';
@@ -236,42 +237,44 @@ class _HomePageState extends State<HomePage>
   }
 
   _getHeading(String title, int index) {
+    print("444444444${title}");
     return Padding(
         padding: const EdgeInsets.only(right: 15.0, top: 5.0, left: 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           //mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.normal,
-                  fontSize: textFontSize16,
-                  color: Theme.of(context).colorScheme.fontColor,
-                )),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Flexible(
-                  flex: 3,
-                  child: Text(
-                    sectionList[index].shortDesc!,
-                    style: const TextStyle(
-                      fontSize: textFontSize12,
-                      fontWeight: FontWeight.w400,
+                Text(title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
                       fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                ),
+                      fontSize: textFontSize16,
+                      color: Theme.of(context).colorScheme.fontColor,
+                    )),
+              // Flexible(
+              //   flex: 3,
+              //   child: Text(
+              //     sectionList[index].shortDesc!,
+              //     style: const TextStyle(
+              //       fontSize: textFontSize12,
+              //       fontWeight: FontWeight.w400,
+              //       fontStyle: FontStyle.normal,
+              //     ),
+              //   ),
+              // ),
                 Flexible(
                   flex: 1,
                   child: GestureDetector(
                     child: Text(
                       getTranslated(context, 'Show All')!,
                       style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Theme.of(context).colorScheme.fontColor,
+                            color: colors.primary,
                             fontSize: textFontSize12,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w900,
                             fontStyle: FontStyle.normal,
                           ),
                     ),
@@ -291,7 +294,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ],
             ),
-            const Divider(thickness: 1),
+
           ],
         ),);
   }
@@ -353,6 +356,7 @@ class _HomePageState extends State<HomePage>
 
   _getSection(int i) {
     var orient = MediaQuery.of(context).orientation;
+    print("1213${i}");
 
     return sectionList[i].style == DEFAULT
         ? Padding(
@@ -361,9 +365,10 @@ class _HomePageState extends State<HomePage>
               padding: const EdgeInsetsDirectional.only(top: 5),
               crossAxisCount: 2,
               shrinkWrap: true,
+              scrollDirection: Axis.vertical,
               childAspectRatio: 0.750,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
+              mainAxisSpacing: 15,
+              crossAxisSpacing: 15,
 
               //  childAspectRatio: 1.0,
               physics: const NeverScrollableScrollPhysics(),
@@ -616,6 +621,7 @@ class _HomePageState extends State<HomePage>
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           child: Stack(
+            alignment: Alignment.bottomRight,
             children: [
               Column(
                 mainAxisSize: MainAxisSize.min,
@@ -636,7 +642,7 @@ class _HomePageState extends State<HomePage>
                           width: double.maxFinite,
                           imageErrorBuilder: (context, error, stackTrace) =>
                               erroWidget(double.maxFinite),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.scaleDown,
                           placeholder: placeHolder(width),
                         ),
                       ),
@@ -651,8 +657,8 @@ class _HomePageState extends State<HomePage>
                       sectionList[secPos].productList![index].name!,
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Theme.of(context).colorScheme.lightBlack,
-                            fontSize: textFontSize10,
-                            fontWeight: FontWeight.w400,
+                            fontSize: textFontSize14,
+                            fontWeight: FontWeight.w800,
                             fontStyle: FontStyle.normal,
                           ),
                       maxLines: 1,
@@ -669,7 +675,7 @@ class _HomePageState extends State<HomePage>
                         Text(
                           ' ${getPriceFormat(context, price)!}',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.blue,
+                            color: colors.primary,
                             fontSize: textFontSize14,
                             fontWeight: FontWeight.w700,
                             fontStyle: FontStyle.normal,
@@ -699,8 +705,8 @@ class _HomePageState extends State<HomePage>
                                               decoration:
                                                   TextDecoration.lineThrough,
                                               letterSpacing: 0,
-                                              fontSize: textFontSize10,
-                                              fontWeight: FontWeight.w400,
+                                              fontSize: textFontSize12,
+                                              fontWeight: FontWeight.w600,
                                               fontStyle: FontStyle.normal,
                                             ),
                                       ),
@@ -712,7 +718,7 @@ class _HomePageState extends State<HomePage>
                                               .textTheme
                                               .overline!
                                               .copyWith(
-                                                color: colors.primary,
+                                                color: Colors.red,
                                                 letterSpacing: 0,
                                                 fontSize: textFontSize10,
                                                 fontWeight: FontWeight.w400,
@@ -754,7 +760,7 @@ class _HomePageState extends State<HomePage>
                                       decoration: TextDecoration.lineThrough,
                                       letterSpacing: 0,
                                       fontSize: textFontSize10,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w600,
                                       fontStyle: FontStyle.normal,
                                     ),
                               ),
@@ -767,10 +773,10 @@ class _HomePageState extends State<HomePage>
                                         .textTheme
                                         .overline!
                                         .copyWith(
-                                          color: colors.primary,
+                                          color: Colors.red,
                                           letterSpacing: 0,
-                                          fontSize: textFontSize10,
-                                          fontWeight: FontWeight.w400,
+                                          fontSize: textFontSize12,
+                                          fontWeight: FontWeight.w600,
                                           fontStyle: FontStyle.normal,
                                         )),
                               ),
@@ -804,7 +810,7 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
               Positioned(
-                  top: 0,
+
                   right: 0,
                   child: Container(
                       decoration: BoxDecoration(
@@ -832,6 +838,7 @@ class _HomePageState extends State<HomePage>
                                       !data.contains(model.id)
                                           ? Icons.favorite_border
                                           : Icons.favorite,
+                                      color: Colors.red,
                                       size: 20,
                                     ),
                                   ),
@@ -891,7 +898,8 @@ class _HomePageState extends State<HomePage>
   _section() {
     return Selector<HomeProvider, bool>(
       builder: (context, data, child) {
-        return data || supportedLocale == null
+        print("######${data}");
+        return data
             ? SizedBox(
                 width: double.infinity,
                 child: Shimmer.fromColors(
@@ -924,94 +932,110 @@ class _HomePageState extends State<HomePage>
                     baseColor: Theme.of(context).colorScheme.simmerBase,
                     highlightColor: Theme.of(context).colorScheme.simmerHigh,
                     child: catLoading()))
-            : Container(
-                height: 100,
-                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                child: ListView.builder(
-                  itemCount: catList.length < 10 ? catList.length : 10,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Container();
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsetsDirectional.only(end: 18),
-                        child: GestureDetector(
-                          onTap: () async {
-                            if (catList[index].subList == null ||
-                                catList[index].subList!.isEmpty) {
-                              await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => ProductList(
-                                      name: catList[index].name,
-                                      id: catList[index].id,
-                                      tag: false,
-                                      fromSeller: false,
+            : Column(
+              children: [
+                catList!= null?Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Categories",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900),),
+                      GestureDetector(onTap:(){
+                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Dashboard(sentIndex: 1,)));
+
+                      },child: Text("More Categories",style: TextStyle(color: colors.primary,fontWeight: FontWeight.w800),)),
+                    ],
+                  ),
+                ):Text(""),
+                Container(
+                    height: 150,
+                    padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                    child: ListView.builder(
+                      itemCount: catList.length < 10 ? catList.length : 10,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Container();
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsetsDirectional.only(end: 18),
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (catList[index].subList == null ||
+                                    catList[index].subList!.isEmpty) {
+                                  await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (context) => ProductList(
+                                          name: catList[index].name,
+                                          id: catList[index].id,
+                                          tag: false,
+                                          fromSeller: false,
+                                        ),
+                                      ));
+                                } else {
+                                  await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (context) => SubCategory(
+                                          title: catList[index].name!,
+                                          subList: catList[index].subList,
+                                        ),
+                                      ));
+                                }
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    child: FadeInImage(
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 150),
+                                      image: CachedNetworkImageProvider(
+                                        catList[index].image!,
+                                      ),
+                                      height: 100.0,
+                                      width: 100.0,
+                                      fit: BoxFit.cover,
+                                      imageErrorBuilder:
+                                          (context, error, stackTrace) =>
+                                              erroWidget(50),
+                                      placeholder: placeHolder(50),
                                     ),
-                                  ));
-                            } else {
-                              await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => SubCategory(
-                                      title: catList[index].name!,
-                                      subList: catList[index].subList,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        catList[index].name!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 10),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  ));
-                            }
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(25.0),
-                                child: FadeInImage(
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 150),
-                                  image: CachedNetworkImageProvider(
-                                    catList[index].image!,
                                   ),
-                                  height: 50.0,
-                                  width: 50.0,
-                                  fit: BoxFit.cover,
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) =>
-                                          erroWidget(50),
-                                  placeholder: placeHolder(50),
-                                ),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: SizedBox(
-                                  width: 50,
-                                  child: Text(
-                                    catList[index].name!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .fontColor,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 10),
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              );
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+              ],
+            );
       },
       selector: (_, homeProvider) => homeProvider.catLoading,
     );
@@ -1035,11 +1059,12 @@ class _HomePageState extends State<HomePage>
 
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
+      getSection();
       getSetting();
       getSlider();
       getCat();
       getSeller();
-      getSection();
+
       getOfferImages();
     } else {
       if (mounted) {
@@ -1070,13 +1095,13 @@ class _HomePageState extends State<HomePage>
             context.read<FavoriteProvider>().setFavlist(tempList);
           } else {
             if (msg != 'No Favourite(s) Product Are Added') {
-              setSnackbar(msg!, context);
+              //setSnackbar(msg!, context);
             }
           }
 
           context.read<FavoriteProvider>().setLoading(false);
         }, onError: (error) {
-          setSnackbar(error.toString(), context);
+         // setSnackbar(error.toString(), context);
           context.read<FavoriteProvider>().setLoading(false);
         });
       } else {
@@ -1239,10 +1264,10 @@ class _HomePageState extends State<HomePage>
 
         setState(() {});
       } else {
-        setSnackbar(msg!, context);
+       // setSnackbar(msg!, context);
       }
     }, onError: (error) {
-      setSnackbar(error.toString(), context);
+     // setSnackbar(error.toString(), context);
     });
   }
 
@@ -1276,7 +1301,7 @@ class _HomePageState extends State<HomePage>
               });
             }
           } on TimeoutException catch (_) {
-            setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+         //   setSnackbar(getTranslated(context, 'somethingMSg')!, context);
             context.read<FavoriteProvider>().setLoading(false);
           }
         } else {
@@ -1361,7 +1386,7 @@ class _HomePageState extends State<HomePage>
 
       context.read<HomeProvider>().setSecLoading(false);
     }, onError: (error) {
-      setSnackbar(error.toString(), context);
+     // setSnackbar(error.toString(), context);
       context.read<HomeProvider>().setSecLoading(false);
     });
   }
@@ -1452,17 +1477,17 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _buildImagePageItem(Model slider) {
-    double height = deviceWidth! / 0.5;
+    double height = deviceWidth! ;
 
     return GestureDetector(
       child: FadeInImage(
-          fadeInDuration: const Duration(milliseconds: 150),
-          image: CachedNetworkImageProvider("hgj"),
-          height: height,
+          fadeInDuration: const Duration(milliseconds: 20),
+          image: CachedNetworkImageProvider(slider.image!),
+          height: 500,
           //width: double.maxFinite,
           fit: BoxFit.fitWidth,
           imageErrorBuilder: (context, error, stackTrace) => Image.asset(
-                'assets/images/StepLogoTransparent.png',
+                '',
                 fit: BoxFit.scaleDown,
                 height: height,
                 color: colors.primary,
@@ -1474,7 +1499,7 @@ class _HomePageState extends State<HomePage>
                 height: height,
                 color: colors.primary,
               ),
-          placeholder: AssetImage('${imagePath}StepLogoTransparent.png')),
+          placeholder: AssetImage('',)),
       onTap: () async {
         int curSlider = context.read<HomeProvider>().curSlider;
 
@@ -1485,7 +1510,7 @@ class _HomePageState extends State<HomePage>
             context,
             PageRouteBuilder(
                 pageBuilder: (_, __, ___) => ProductDetail1(
-                    model: item, secPos: 0, index: 0, list: true)),
+                    model: item, secPos: 0, index: 0, list: true,)),
           );
         } else if (homeSliderList[curSlider].type == 'categories') {
           Product item = homeSliderList[curSlider].list;
@@ -1776,12 +1801,13 @@ class _HomePageState extends State<HomePage>
           return _buildImagePageItem(slider);
         }).toList();
       } else {
-        setSnackbar(msg!, context);
+
+      //  setSnackbar(msg!, context);
       }
 
       context.read<HomeProvider>().setSliderLoading(false);
     }, onError: (error) {
-      setSnackbar(error.toString(), context);
+     // setSnackbar(error.toString(), context);
       context.read<HomeProvider>().setSliderLoading(false);
     });
   }
@@ -1810,12 +1836,12 @@ class _HomePageState extends State<HomePage>
           }
         }
       } else {
-        setSnackbar(msg!, context);
+      //  setSnackbar(msg!, context);
       }
 
       context.read<HomeProvider>().setCatLoading(false);
     }, onError: (error) {
-      setSnackbar(error.toString(), context);
+    //  setSnackbar(error.toString(), context);
       context.read<HomeProvider>().setCatLoading(false);
     });
   }
@@ -1907,7 +1933,7 @@ class _HomePageState extends State<HomePage>
 
       context.read<HomeProvider>().setSellerLoading(false);
     }, onError: (error) {
-      setSnackbar(error.toString(), context);
+     // setSnackbar(error.toString(), context);
       context.read<HomeProvider>().setSellerLoading(false);
     });
   }
@@ -2193,7 +2219,7 @@ class _HomePageState extends State<HomePage>
 
           context.read<FavoriteProvider>().addFavItem(model);
         } else {
-          setSnackbar(msg!, context);
+         // setSnackbar(msg!, context);
         }
 
         if (mounted) {
@@ -2204,7 +2230,7 @@ class _HomePageState extends State<HomePage>
           });
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+    //    setSnackbar(getTranslated(context, 'somethingMSg')!, context);
       }
     } else {
       if (mounted) {
@@ -2239,7 +2265,7 @@ class _HomePageState extends State<HomePage>
               .read<FavoriteProvider>()
               .removeFavItem(model.prVarientList![0].id!);
         } else {
-          setSnackbar(msg!, context);
+         // setSnackbar(msg!, context);
         }
 
         if (mounted) {

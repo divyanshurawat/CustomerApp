@@ -81,21 +81,21 @@ class _AllCategoryState extends State<AllCategory> {
 
           return Row(
             children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  color: Theme.of(context).colorScheme.lightWhite,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsetsDirectional.only(top: 10.0),
-                    itemCount: catList.length,
-                    itemBuilder: (context, index) {
-                      return catItem(index, context);
-                    },
-                  ),
-                ),
-              ),
+            // Expanded(
+            //   flex: 1,
+            //   child: Container(
+            //     color: Theme.of(context).colorScheme.lightWhite,
+            //     child: ListView.builder(
+            //       shrinkWrap: true,
+            //       scrollDirection: Axis.vertical,
+            //       padding: const EdgeInsetsDirectional.only(top: 10.0),
+            //       itemCount: catList.length,
+            //       itemBuilder: (context, index) {
+            //         return catItem(index, context);
+            //       },
+            //     ),
+            //   ),
+            // ),
               Expanded(
                 flex: 3,
                 child: catList.isNotEmpty
@@ -109,30 +109,30 @@ class _AllCategoryState extends State<AllCategory> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text('${catList[data].name!} '),
-                                        const Expanded(
-                                          child: Divider(
-                                            thickness: 2,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      child: Text(
-                                        '${getTranslated(context, 'All')!} ${catList[data].name!} ',
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .fontColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: textFontSize16,
-                                        ),
-                                      ),
-                                    )
+                                  // Row(
+                                  //   children: [
+                                  //   //  Text('${catList[data].name!} '),
+                                  //     const Expanded(
+                                  //       child: Divider(
+                                  //         thickness: 2,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.symmetric(
+                                  //       vertical: 8.0),
+                                  //   child: Text(
+                                  //     '${getTranslated(context, 'All')!} ${catList[data].name!} ',
+                                  //     style: TextStyle(
+                                  //       color: Theme.of(context)
+                                  //           .colorScheme
+                                  //           .fontColor,
+                                  //       fontWeight: FontWeight.bold,
+                                  //       fontSize: textFontSize16,
+                                  //     ),
+                                  //   ),
+                                  // )
                                   ],
                                 ),
                               );
@@ -460,10 +460,7 @@ class _AllCategoryState extends State<AllCategory> {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(color: Theme.of(context).colorScheme.fontColor),
+            style: TextStyle(color: Colors.black54),
           )
         ],
       ),

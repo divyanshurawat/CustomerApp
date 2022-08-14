@@ -161,13 +161,13 @@ class _GettingStartedScreenState extends State<IntroSlider>
                   height: 55,
                   alignment: FractionalOffset.center,
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                           colors: [
-                            const Color(0xFF089BF0),
-                            const Color(0xFF76B9D1),
+                            Color(0xFF089BF0),
+                            Color(0xFF76B9D1),
                           ],
-                          begin: const FractionalOffset(0.0, 0.0),
-                          end: const FractionalOffset(1.0, 0.0),
+                          begin: FractionalOffset(0.0, 0.0),
+                          end: FractionalOffset(1.0, 0.0),
                           stops: [0.0, 1.0],
                           tileMode: TileMode.clamp),
                       borderRadius: BorderRadius.circular(10)),
@@ -259,7 +259,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                     Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const SignInUpAcc()),
+                          builder: (context) => const Login()),
                     );
                   },
                   child: Row(children: [
@@ -308,7 +308,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          skipBtn(),
+         // skipBtn(),
           _slider(),
           _btn(),
         ],

@@ -17,6 +17,7 @@ import '../Helper/Color.dart';
 import '../Helper/Session.dart';
 import '../Helper/String.dart';
 import '../Model/Section_Model.dart';
+import 'Product_Detail.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({Key? key}) : super(key: key);
@@ -181,20 +182,6 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                         elevation: 0.1,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
-                          splashColor: colors.primary.withOpacity(0.2),
-                          onTap: () {
-                            Product model = favList[index];
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => ProductDetail1(
-                                    model: model,
-                                    secPos: 0,
-                                    index: index,
-                                    list: true,
-                                  )),
-                            );
-                          },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +252,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
 
-                                      /*  Padding(
+                                        /*  Padding(
                                             padding:
                                             const EdgeInsetsDirectional.only(
                                                 start: 8.0),
@@ -350,7 +337,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                               Text(
                                                 getPriceFormat(
                                                     context,
-                                                 price)!,
+                                                    price)!,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -367,7 +354,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                     double.parse(favList[index]
                                                         .prVarientList![0]
                                                         .price!))!
-                                                    : '',
+                                                    : "",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .overline!
@@ -498,8 +485,8 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                                   .itemsCounter!
                                                                   .map<PopupMenuItem<String>>((String value) {
                                                                 return PopupMenuItem(
-                                                                    value: value,
-                                                                    child: Text(value, style: TextStyle(color: Theme.of(context).colorScheme.fontColor)));
+                                                                    child: Text(value, style: TextStyle(color: Theme.of(context).colorScheme.fontColor)),
+                                                                    value: value);
                                                               }).toList();
                                                             },
                                                           ),
@@ -588,9 +575,23 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
+                          splashColor: colors.primary.withOpacity(0.2),
+                          onTap: () {
+                            Product model = favList[index];
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) => ProductDetail1(
+                                    model: model,
+                                    secPos: 0,
+                                    index: index,
+                                    list: true,
+                                  )),
+                            );
+                          },
                         ),
                       ),
-                      _controller[index].text == '0' ?
+                      _controller[index].text == "0" ?
                       Positioned.directional(
                           textDirection: Directionality.of(context),
                           bottom: 4,

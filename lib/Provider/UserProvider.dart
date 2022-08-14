@@ -7,7 +7,9 @@ class UserProvider extends ChangeNotifier {
       _curBal = '',
       _mob = '',
       _profilePic = '',
-      _email = '';
+      _email = '',
+      _gstno='',
+       _aadhar='';
   String?  _userId = '';
 
   String? _curPincode = '';
@@ -29,6 +31,8 @@ class UserProvider extends ChangeNotifier {
   String? get userId => _userId;
 
   String get email => _email;
+  String get aadhar => _aadhar;
+  String get gstno=> _gstno;
 
   void setPincode(String pin) {
     _curPincode = pin;
@@ -65,7 +69,14 @@ class UserProvider extends ChangeNotifier {
     _email = email;
     notifyListeners();
   }
-
+  void setAadhar(String aadhar) {
+    _aadhar = aadhar;
+    notifyListeners();
+  }
+  void setGST(String gstno) {
+    _gstno = gstno;
+    notifyListeners();
+  }
   void setUserId(String? count) {
     _userId = count;
   }

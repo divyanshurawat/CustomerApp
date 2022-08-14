@@ -10,10 +10,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +26,8 @@ import '../Helper/String.dart';
 import '../Model/User.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
+
+import 'Privacy_Policy.dart';
 
 class OrderDetail extends StatefulWidget {
   final OrderModel? model;
@@ -996,64 +998,86 @@ class StateOrder extends State<OrderDetail>
                           ? Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: OutlinedButton(
-                                onPressed: _isReturnClick
-                                    ? () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                getTranslated(
-                                                    context, 'ARE_YOU_SURE?')!,
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor),
-                                              ),
-                                              content: Text(
-                                                'Would you like to return this product?',
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  child: Text(
-                                                    getTranslated(
-                                                        context, 'YES')!,
-                                                    style: const TextStyle(
-                                                        color: colors.primary),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    setState(() {
-                                                      _isReturnClick = false;
-                                                      _isProgress = true;
-                                                    });
-                                                    cancelOrder(
-                                                        RETURNED,
-                                                        updateOrderItemApi,
-                                                        orderItem.id);
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: Text(
-                                                    getTranslated(
-                                                        context, 'NO')!,
-                                                    style: const TextStyle(
-                                                        color: colors.primary),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                )
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }
-                                    : null,
+                                onPressed: () async {
+                                  if (_isReturnClick) {
+                                    bool value = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ReturnPage(
+                                                  productID:
+                                                      orderItem.productId,
+                                                  orderItem: orderItem,
+                                                )));
+                                    if (value) {
+                                      print(value);
+                                      setState(() {
+                                        _isReturnClick = false;
+                                        _isProgress = true;
+                                      });
+                                      cancelOrder(RETURNED, updateOrderItemApi,
+                                          orderItem.id);
+                                    }
+                                  }
+                                },
+                                // onPressed: _isReturnClick
+                                //     ? () {
+                                //         showDialog(
+                                //           context: context,
+                                //           builder: (BuildContext context) {
+                                //             return AlertDialog(
+                                //               title: Text(
+                                //                 getTranslated(
+                                //                     context, 'ARE_YOU_SURE?')!,
+                                //                 style: TextStyle(
+                                //                     color: Theme.of(context)
+                                //                         .colorScheme
+                                //                         .fontColor),
+                                //               ),
+                                //               content: Text(
+                                //                 'Would you like to return this product?',
+                                //                 style: TextStyle(
+                                //                     color: Theme.of(context)
+                                //                         .colorScheme
+                                //                         .fontColor),
+                                //               ),
+                                //               actions: [
+                                //                 TextButton(
+                                //                   child: Text(
+                                //                     getTranslated(
+                                //                         context, 'YES')!,
+                                //                     style: const TextStyle(
+                                //                         color: colors.primary),
+                                //                   ),
+                                //                   onPressed: () {
+                                //                     Navigator.pop(context);
+                                //                     setState(() {
+                                //                       _isReturnClick = false;
+                                //                       _isProgress = true;
+                                //                     });
+                                //                     Navigator.push(context, MaterialPageRoute(builder: (context)=> ReturnPage()));
+                                //                    // cancelOrder(
+                                //                    //     RETURNED,
+                                //                    //     updateOrderItemApi,
+                                //                    //     orderItem.id);
+                                //                   },
+                                //                 ),
+                                //                 TextButton(
+                                //                   child: Text(
+                                //                     getTranslated(
+                                //                         context, 'NO')!,
+                                //                     style: const TextStyle(
+                                //                         color: colors.primary),
+                                //                   ),
+                                //                   onPressed: () {
+                                //                     Navigator.pop(context);
+                                //                   },
+                                //                 )
+                                //               ],
+                                //             );
+                                //           },
+                                //         );
+                                //       }
+                                //  : null,
                                 child: Text(
                                     getTranslated(context, 'ITEM_RETURN')!),
                               ),
@@ -1551,12 +1575,12 @@ class StateOrder extends State<OrderDetail>
                     var targetFileName = 'Invoice_${widget.model!.id}';
                     var generatedPdfFile, filePath;
                     try {
-                      generatedPdfFile =
-                          await FlutterHtmlToPdf.convertFromHtmlContent(
-                              widget.model!.invoice!,
-                              targetPath,
-                              targetFileName);
-                      filePath = generatedPdfFile.path;
+                    ///  generatedPdfFile =
+                    ///      await FlutterHtmlToPdf.convertFromHtmlContent(
+                    ///          widget.model!.invoice!,
+                    ///          targetPath,
+                    ///          targetFileName);
+                      filePath = '';
                     } catch (e) {
                       if (mounted) {
                         setState(() {
@@ -2425,4 +2449,518 @@ class StateOrder extends State<OrderDetail>
       ],
     );
   }*/
+}
+
+class ReturnPage extends StatefulWidget {
+  OrderItem? orderItem;
+  String? productID;
+  String? date;
+  String? items;
+  double? price;
+  String? status;
+  String? name;
+  String? imageurl;
+  ReturnPage(
+      {Key? key,
+      this.status,
+      this.price,
+      this.name,
+      this.productID,
+      this.date,
+      this.items,
+      this.imageurl,
+      this.orderItem})
+      : super(key: key);
+
+  @override
+  State<ReturnPage> createState() => _ReturnPageState();
+}
+
+class _ReturnPageState extends State<ReturnPage> {
+  final ImagePicker _picker = ImagePicker();
+  String? selectedImg;
+
+  TextEditingController messageController = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.orderItem!.name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colors.primary,
+        title: const Text("Shipping Return"),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  children: [
+                    const Text("Return Product"),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Container(
+                  height: 250,
+                  child: Card(
+                    elevation: 1,
+
+                    //margin: EdgeInsets.all(5.0),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(7),
+                      child: Column(children: <Widget>[
+                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                          // Hero(
+                          //     tag: '$index${orderItem.id}',
+                          //     child: ClipRRect(
+                          //       borderRadius: const BorderRadius.only(
+                          //           bottomLeft: Radius.circular(7.0),
+                          //           topLeft: Radius.circular(7.0)),
+                          //       child: FadeInImage(
+                          //         fadeInDuration: const Duration(milliseconds: 150),
+                          //         image: CachedNetworkImageProvider(orderItem.image!),
+                          //         height: 100.0,
+                          //         width: 100.0,
+                          //         fit: BoxFit.cover,
+                          //         imageErrorBuilder: (context, error, stackTrace) =>
+                          //             erroWidget(90),
+                          //
+                          //         // errorWidget:(context, url,e) => placeHolder(90) ,
+                          //         placeholder: placeHolder(90),
+                          //       ),
+                          //     )),
+                          Expanded(
+                              flex: 9,
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                      start: 10.0,
+                                      end: 5.0,
+                                      bottom: 0,
+                                      top: 8.0),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: const EdgeInsetsDirectional
+                                                    .only(
+                                                top: 10.0,
+                                                end: 12.0,
+                                                start: 12.0),
+                                            child: Text(
+                                              "${widget.orderItem!.name}",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2!
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            )),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Text(
+                                            'Order at ${widget.orderItem!.listDate![1]}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2!
+                                                .copyWith(
+                                                    color: Colors.black38,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Order Status',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.black38,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                              Text(
+                                                '${widget.orderItem!.status.toString().toUpperCase()}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.normal),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Items',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.black38,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                              Text(
+                                                '${widget.orderItem!.qty} Items Purchased',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.normal),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Price',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.black38,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                              Text(
+                                                '${getPriceFormat(context, double.parse(widget.orderItem!.price!))!}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        color: Colors.blue,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ]))),
+                        ]),
+                      ]),
+                      onTap: () async {
+                        // FocusScope.of(context).unfocus();
+                        // await Navigator.push(
+                        //   context,
+                        //   CupertinoPageRoute(
+                        //       builder: (context) => OrderDetail(model: searchList[index])),
+                        // ).then((result) {
+                        //   if (mounted && result == 'update') {
+                        //     setState(() {
+                        //       _isLoading = true;
+                        //       offset = 0;
+                        //       total = 0;
+                        //       searchList.clear();
+                        //       getOrder();
+                        //     });
+                        //   }
+                        // });
+                        //
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Return Qty - 1"),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => PrivacyPolicy(
+                              title:
+                                  getTranslated(context, 'RETURN_POLICY_LBL'),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.info,
+                            color: Colors.black87,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          const Text("View returned Policy"),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Return Request Details",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Reason for Return",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: Colors.white, //<-- SEE HERE
+                  ),
+                  child: DropdownButton<String>(
+                    value: "Product/packaging is damaged or defective",
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        //  dropdownValue = newValue!;
+                      });
+                    },
+                    items: <String>[
+                      'Product isn’t matching with the product description',
+                      'Product/packaging is damaged or defective'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style:
+                              const TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  children: [
+                    const Text(
+                      "More Details",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Container(
+                  color: Colors.white,
+                  child: TextFormField(
+                    maxLines: 5,
+                    controller: messageController,
+                    decoration: const InputDecoration(
+                        hintText: 'Your Message',
+                        hintStyle: TextStyle(fontSize: 12)),
+                    onSaved: (String? value) {
+                      // This optional block of code can be used to run
+                      // code when the user saves the form.
+                    },
+                    validator: (String? value) {
+                      return (value != null && value.contains('@'))
+                          ? 'Do not use the @ char.'
+                          : null;
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Add Image and Video",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  if (image != null) {
+                    setState(() {
+                      selectedImg = image.path;
+                    });
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, style: BorderStyle.solid),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          selectedImg != null
+                              ? Image.file(
+                                  File(selectedImg!),
+                                  height: 100,
+                                  width: 100,
+                                )
+                              : Icon(
+                                  Icons.cloud_upload_outlined,
+                                  size: 100,
+                                ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Drag & drop files or ",
+                                style: TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                              const Text(
+                                "Browse",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                "Supported Formates: JPEG, PNG, GIF, MP4\n"
+                                "PDF, PSD, AI, Word, PPT",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black54),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  if (messageController.text.length > 5) {
+                    Navigator.pop(context,true);
+                  } else {
+                    setSnackbar(
+                        "Please enter message more than 5 characters", context);
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: colors.primary,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Center(
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 12.0, right: 8.0, top: 8.0, bottom: 2),
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      border: Border.all(
+                          color: Colors.black54,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    child: Center(
+                      child: const Text(
+                        "Cancel Return",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, color: Colors.black54),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -252,7 +252,7 @@ class StatePreview extends State<ProductPreview> {
                       );
                     } else if (widget.videoType == 'vimeo') {
                       List<String> id =
-                          widget.video!.split('https://vimeo.multivendor/');
+                          widget.video!.split('https://vimeo.step/');
 
                       return SafeArea(
                           child: SizedBox(

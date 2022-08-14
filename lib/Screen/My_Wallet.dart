@@ -23,6 +23,7 @@ import '../Helper/Session.dart';
 import '../Helper/SimBtn.dart';
 import '../Helper/String.dart';
 import '../Helper/Stripe_Service.dart';
+import '../Helper/call_button.dart';
 import '../Model/Transaction_Model.dart';
 import '../Model/getWithdrawelRequest/getWithdrawelmodel.dart';
 import 'HomePage.dart';
@@ -128,10 +129,21 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: colors.primary,
+        onPressed:(){
+        call_button();
+      },
+        child: Image.asset("assets/images/contact.png"),
+
+
+
+      ),
         key: _scaffoldKey,
         appBar: AppBar(
+
           titleSpacing: 0,
-          backgroundColor: Theme.of(context).colorScheme.white,
+          backgroundColor: colors.primary,
           leading: Builder(
             builder: (BuildContext context) {
               return Container(
@@ -142,7 +154,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                   child: const Center(
                     child: Icon(
                       Icons.arrow_back_ios_rounded,
-                      color: colors.primary,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -152,25 +164,25 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
           title: Text(
             getTranslated(context, 'MYWALLET')!,
             style: const TextStyle(
-                color: colors.primary, fontWeight: FontWeight.normal),
+                color: Colors.white, fontWeight: FontWeight.normal),
           ),
           actions: <Widget>[
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              decoration: shadow(),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(4),
-                onTap: filterDialog,
-                child: Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: Icon(
-                    Icons.filter_alt_outlined,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 25,
-                  ),
-                ),
-              ),
-            ),
+           //Container(
+           //  margin: const EdgeInsets.symmetric(vertical: 10),
+           //  decoration: shadow(),
+           //  child: InkWell(
+           //    borderRadius: BorderRadius.circular(4),
+           //    onTap: filterDialog,
+           //    child: Padding(
+           //      padding: EdgeInsets.all(4.0),
+           //      child: Icon(
+           //        Icons.filter_alt_outlined,
+           //        color: Theme.of(context).colorScheme.primary,
+           //        size: 25,
+           //      ),
+           //    ),
+           //  ),
+           //),
           ],
         ),
         body: _isNetworkAvail
@@ -1478,67 +1490,97 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(12.0),
             child: Card(
               elevation: 1,
               child: Padding(
-                padding: const EdgeInsets.all(18.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.account_balance_wallet,
-                          color: Theme.of(context).colorScheme.fontColor,
-                        ),
-                        Text(
-                          ' ${getTranslated(context, 'CURBAL_LBL')!}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor,
-                                  fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Consumer<UserProvider>(builder: (context, userProvider, _) {
+                            return Text(
+                                ' ${getPriceFormat(context, double.parse(userProvider.curBalance))!}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .copyWith(
+                                    color:
+                                    Theme.of(context).colorScheme.fontColor,
+                                    fontWeight: FontWeight.bold));
+                          }),
+                        ],
+                      ),
                     ),
-                    Consumer<UserProvider>(builder: (context, userProvider, _) {
-                      return Text(
-                          ' ${getPriceFormat(context, double.parse(userProvider.curBalance))!}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.fontColor,
-                                  fontWeight: FontWeight.bold));
-                    }),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0,top: 2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+
+                          Text(
+                            ' ${getTranslated(context, 'CURBAL_LBL')!}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(
+                                    color:
+                                        Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     Row(
                       children: [
-                        Expanded(
-                          flex: 1,
-                          child: SimBtn(
-                            borderRadius: circularBorderRadius5,
-                            size: 0.8,
-                            title: getTranslated(context, 'ADD_MONEY'),
-                            onBtnSelected: () {
-                              _showDialog();
-                            },
-                          ),
+                        Column(
+                          children: [
+                            CircularBtn(
+                              icon: Icon(Icons.payments_rounded,color: Colors.white,size: 40,),
+                              backgroundColor: Colors.pinkAccent,
+                              borderRadius: circularBorderRadius5,
+                              size: 0.2,
+                              title:"Pay",
+                              onBtnSelected: () {
+                                _showDialog();
+                              },
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: SimBtn(
-                            borderRadius: circularBorderRadius5,
-                            size: 0.8,
-                            title: getTranslated(context, 'Withdraw'),
-                            onBtnSelected: () {
-                              _showWithDrawDialog();
-                            },
-                          ),
+                        Column(
+                          children: [
+                            CircularBtn(
+                              backgroundColor: Colors.lightBlueAccent,
+                              borderRadius: circularBorderRadius5,
+                              size: 0.2,
+                              icon: Icon(Icons.attach_money_rounded,color: Colors.white,size: 40,),
+                              title: 'Transfer',
+                              onBtnSelected: () {
+                                _showDialog();
+                              },
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            CircularBtn
+                              (
+                              backgroundColor: Colors.indigoAccent,
+                              borderRadius: circularBorderRadius5,
+                              size: 0.2,
+                              icon: Icon(Icons.account_balance_wallet_rounded,color: Colors.white,size: 40,),
+                              title: 'Withdrawl',
+                              onBtnSelected: () {
+                                _showWithDrawDialog();
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -1548,12 +1590,12 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
             child: Text(
                 currentSelectedFilterIsTransaction
                     ? getTranslated(context, 'WALLET_TRANSACTION_HISTORY')!
                     : getTranslated(context, "Wallet History")!,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.black54,fontSize: 20)),
           ),
           currentSelectedFilterIsTransaction
               ? tranList.isEmpty

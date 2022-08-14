@@ -12,6 +12,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:govt_documents_validator/govt_documents_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:provider/provider.dart';
@@ -84,12 +85,12 @@ class MyBehavior extends ScrollBehavior {
 
 Widget getDiscountLabel(double discount) => Container(
       decoration: BoxDecoration(
-          color: colors.red, borderRadius: BorderRadius.circular(1)),
+          color: colors.red, borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.only(left: 5),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
         child: Text(
-          '${discount.round().toStringAsFixed(2)}%',
+          '-${discount.round().toStringAsFixed(2)}%',
           style: const TextStyle(
               color: colors.whiteTemp,
               fontWeight: FontWeight.bold,
@@ -103,10 +104,12 @@ String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 getAppBar(
   String title,
   BuildContext context,
+
 ) {
   return AppBar(
     titleSpacing: 0,
-    backgroundColor: Theme.of(context).colorScheme.white,
+    elevation: 0.0,
+    backgroundColor: colors.primary,
     leading: Builder(
       builder: (BuildContext context) {
         return Container(
@@ -117,7 +120,7 @@ getAppBar(
             child: const Center(
               child: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: colors.primary,
+                color: Colors.white,
               ),
             ),
           ),
@@ -127,76 +130,248 @@ getAppBar(
     title: Text(
       title,
       style:
-          const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
     ),
     actions: <Widget>[
-      title == getTranslated(context, 'FAVORITE')
-          ? Container()
-          : IconButton(
-              padding: const EdgeInsets.all(0),
-              icon: SvgPicture.asset(
-                '${imagePath}desel_fav.svg',
-                color: colors.primary,
+    //  title == getTranslated(context, 'FAVORITE')
+    //      ? Container()
+    //      : IconButton(
+    //          padding: const EdgeInsets.all(0),
+    //          icon: SvgPicture.asset(
+    //            '${imagePath}desel_fav.svg',
+    //            color: Colors.white,
+    //          ),
+    //          onPressed: () {
+    //            Navigator.push(
+    //              context,
+    //              CupertinoPageRoute(
+    //                builder: (context) => const Favorite(),
+    //              ),
+    //            );
+    //          },
+    //        ),
+    //  Selector<UserProvider, String>(
+    //    builder: (context, data, child) {
+    //      return IconButton(
+    //        icon: Stack(
+    //          children: [
+    //            Center(
+    //                child: SvgPicture.asset(
+    //              '${imagePath}appbarCart.svg',
+    //              color:Colors.white,
+    //            )),
+    //            (data.isNotEmpty && data != '0')
+    //                ? Positioned(
+    //                    bottom: 20,
+    //                    right: 0,
+    //                    child: Container(
+    //                      //  height: 20,
+    //                      decoration: const BoxDecoration(
+    //                          shape: BoxShape.circle, color: Colors.red),
+    //                      child: Center(
+    //                        child: Padding(
+    //                          padding: const EdgeInsets.all(3),
+    //                          child: Text(
+    //                            data,
+    //                            style: const TextStyle(
+    //                                fontSize: 7,
+    //                                fontWeight: FontWeight.bold,
+    //                                color: colors.whiteTemp),
+    //                          ),
+    //                        ),
+    //                      ),
+    //                    ),
+    //                  )
+    //                : Container()
+    //          ],
+    //        ),
+    //        onPressed: () {
+    //          cartTotalClear();
+    //          Navigator.push(
+    //            context,
+    //            CupertinoPageRoute(
+    //              builder: (context) => const Cart(
+    //                fromBottom: false,
+    //              ),
+    //            ),
+    //          );
+    //        },
+    //      );
+    //    },
+    //    selector: (_, homeProvider) => homeProvider.curCartCount,
+    //  )
+    ],
+  );
+}
+getAppImplyBar(
+    String title,
+    BuildContext context,
+
+    ) {
+  return AppBar(
+    titleSpacing: 0,
+    elevation: 0.0,
+    automaticallyImplyLeading: false,
+    backgroundColor: colors.primary,
+    leading: Builder(
+      builder: (BuildContext context) {
+        return Container(
+          margin: const EdgeInsets.all(10),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () => Navigator.of(context).pop(),
+            child: const Center(
+              child: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const Favorite(),
-                  ),
-                );
-              },
             ),
-      Selector<UserProvider, String>(
-        builder: (context, data, child) {
-          return IconButton(
-            icon: Stack(
-              children: [
-                Center(
-                    child: SvgPicture.asset(
-                  '${imagePath}appbarCart.svg',
-                  color: colors.primary,
-                )),
-                (data.isNotEmpty && data != '0')
-                    ? Positioned(
-                        bottom: 20,
-                        right: 0,
-                        child: Container(
-                          //  height: 20,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: colors.primary),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(3),
-                              child: Text(
-                                data,
-                                style: const TextStyle(
-                                    fontSize: 7,
-                                    fontWeight: FontWeight.bold,
-                                    color: colors.whiteTemp),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container()
-              ],
+          ),
+        );
+      },
+    ),
+    title: Text(
+      title,
+      style:
+      const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+    ),
+    actions: <Widget>[
+      //  title == getTranslated(context, 'FAVORITE')
+      //      ? Container()
+      //      : IconButton(
+      //          padding: const EdgeInsets.all(0),
+      //          icon: SvgPicture.asset(
+      //            '${imagePath}desel_fav.svg',
+      //            color: Colors.white,
+      //          ),
+      //          onPressed: () {
+      //            Navigator.push(
+      //              context,
+      //              CupertinoPageRoute(
+      //                builder: (context) => const Favorite(),
+      //              ),
+      //            );
+      //          },
+      //        ),
+      //  Selector<UserProvider, String>(
+      //    builder: (context, data, child) {
+      //      return IconButton(
+      //        icon: Stack(
+      //          children: [
+      //            Center(
+      //                child: SvgPicture.asset(
+      //              '${imagePath}appbarCart.svg',
+      //              color:Colors.white,
+      //            )),
+      //            (data.isNotEmpty && data != '0')
+      //                ? Positioned(
+      //                    bottom: 20,
+      //                    right: 0,
+      //                    child: Container(
+      //                      //  height: 20,
+      //                      decoration: const BoxDecoration(
+      //                          shape: BoxShape.circle, color: Colors.red),
+      //                      child: Center(
+      //                        child: Padding(
+      //                          padding: const EdgeInsets.all(3),
+      //                          child: Text(
+      //                            data,
+      //                            style: const TextStyle(
+      //                                fontSize: 7,
+      //                                fontWeight: FontWeight.bold,
+      //                                color: colors.whiteTemp),
+      //                          ),
+      //                        ),
+      //                      ),
+      //                    ),
+      //                  )
+      //                : Container()
+      //          ],
+      //        ),
+      //        onPressed: () {
+      //          cartTotalClear();
+      //          Navigator.push(
+      //            context,
+      //            CupertinoPageRoute(
+      //              builder: (context) => const Cart(
+      //                fromBottom: false,
+      //              ),
+      //            ),
+      //          );
+      //        },
+      //      );
+      //    },
+      //    selector: (_, homeProvider) => homeProvider.curCartCount,
+      //  )
+    ],
+  );
+}
+getSimpleAddressAppBar(
+    String title,
+    BuildContext context,
+    ) {
+  return AppBar(
+    titleSpacing: 0,
+    backgroundColor: colors.primary,
+    leading: Builder(builder: (BuildContext context) {
+      return Container(
+        margin: const EdgeInsets.all(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: () => Navigator.of(context).pop(),
+          child: const Center(
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: Colors.white,
             ),
-            onPressed: () {
-              cartTotalClear();
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => const Cart(
-                    fromBottom: false,
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        selector: (_, homeProvider) => homeProvider.curCartCount,
-      )
+          ),
+        ),
+      );
+    }),
+    title: Text(
+      title,
+      style:
+      const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+    ),
+    actions: [
+      //Customer Support
+
+
+    ],
+  );
+}
+
+getSimplePaymentAppBar(
+    String title,
+    BuildContext context,
+    ) {
+  return AppBar(
+    titleSpacing: 0,
+    backgroundColor: colors.primary,
+    leading: Builder(builder: (BuildContext context) {
+      return Container(
+        margin: const EdgeInsets.all(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: () => Navigator.of(context).pop(),
+          child: const Center(
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+    }),
+    title: Text(
+      title,
+      style:
+      const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+    ),
+    actions: [
+      //Customer Support
+
+
     ],
   );
 }
@@ -207,7 +382,7 @@ getSimpleAppBar(
 ) {
   return AppBar(
     titleSpacing: 0,
-    backgroundColor: Theme.of(context).colorScheme.white,
+    backgroundColor: colors.primary,
     leading: Builder(builder: (BuildContext context) {
       return Container(
         margin: const EdgeInsets.all(10),
@@ -217,7 +392,7 @@ getSimpleAppBar(
           child: const Center(
             child: Icon(
               Icons.arrow_back_ios_rounded,
-              color: colors.primary,
+              color: Colors.white,
             ),
           ),
         ),
@@ -226,8 +401,13 @@ getSimpleAppBar(
     title: Text(
       title,
       style:
-          const TextStyle(color: colors.primary, fontWeight: FontWeight.normal),
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
     ),
+    actions: [
+      //Customer Support
+
+
+    ],
   );
 }
 
@@ -337,6 +517,15 @@ String? validatePass(String value, String? msg1, String? msg2) {
     return null;
   }
 }
+String? validateOTP(String value, String? msg1, String? msg2) {
+  if (value.isEmpty) {
+    return msg1;
+  } else if (value.length == 6) {
+    return msg2;
+  } else {
+    return null;
+  }
+}
 
 String? validateAltMob(String value, String? msg) {
   if (value.isNotEmpty && value.length < 9) {
@@ -369,6 +558,53 @@ String? validateEmail(String value, String? msg1, String? msg2) {
           r'*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+'
           r'[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
       .hasMatch(value)) {
+    return msg2;
+  } else {
+    return null;
+  }
+}
+String? validateAddress(String value, String? msg1, String? msg2) {
+  if (value.isEmpty) {
+    return msg1;
+  }  else {
+    return null;
+  }
+}
+String? validateGST(String value, String? msg1, String? msg2) {
+  bool isGSTNum;
+  GSTValidator gstValidator = new GSTValidator();
+  //isGSTNum = gstValidator.validate(value);
+  if(value.length==0){
+    return null;
+  }
+   else {
+    return null;
+  }
+}
+
+String? validateAadhar(String value, String? msg1, String? msg2) {
+  bool isAadharNum;
+
+  AadharValidator aadharValidator = new AadharValidator();
+  isAadharNum = aadharValidator.validate(value);
+  if(value.length==0){
+    return null;
+  }
+  else if (!isAadharNum) {
+    return msg2;
+  } else {
+    return null;
+  }
+}
+String? validateAadharD(String value, String? msg1, String? msg2) {
+  bool isAadharNum;
+
+  AadharValidator aadharValidator = new AadharValidator();
+  isAadharNum = aadharValidator.validate(value);
+  if(value.isEmpty){
+    return msg1;
+  }
+  else if (!isAadharNum) {
     return msg2;
   } else {
     return null;
@@ -613,13 +849,16 @@ String getToken() {
     issuedAt: DateTime.now().toUtc(),
   );
   String token = issueJwtHS256(claimSet, jwtKey);
-  print(token);
+
+  print("Token#### :  ${token}");
 
   return token;
 }
 
 Map<String, String> get headers => {
+
       'Authorization': 'Bearer ${getToken()}',
+
     };
 
 dialogAnimate(BuildContext context, Widget dialge) {

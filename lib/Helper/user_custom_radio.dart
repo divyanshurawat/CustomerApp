@@ -13,6 +13,11 @@ class RadioItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape:RoundedRectangleBorder(
+        side: BorderSide(color: colors.primary, width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+
       color: _item.addItem!.isDefault == '1'
           ? Theme.of(context).colorScheme.white
           : Theme.of(context).disabledColor.withOpacity(0.1),
@@ -26,7 +31,7 @@ class RadioItem extends StatelessWidget {
               children: <Widget>[
                 _item.show
                     ? Container(
-                        height: 20.0,
+                        height: 10.0,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _item.isSelected!
@@ -51,35 +56,45 @@ class RadioItem extends StatelessWidget {
                     : Container(),
                 Expanded(
                   child: Container(
+                    height: MediaQuery.of(context).size.height/4,
+
                     margin: const EdgeInsetsDirectional.only(start: 10.0),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 5.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
                           onTap: () {
                             _item.onSetDefault!();
                           },
                           child: Column(
+
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      _item.name!,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                      maxLines: 1,
+                              Padding(
+                                padding: const EdgeInsets.only(top:12.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _item.name!,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,fontSize: 18),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 1,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                              Text(_item.add!),
+                              Padding(
+                                padding: const EdgeInsets.only(top:12.0),
+                                child: Text(_item.add!,style: TextStyle(color: Colors.grey),),
+                              ),
                           /*    Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
@@ -193,33 +208,51 @@ class RadioItem extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Row(
-                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Spacer(),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                              onTap: (){
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
 
-                                _item.onEditSelected!();
-                              },
-                              child: Text(
-                                getTranslated(context, 'EDIT')!,
-                                style: const TextStyle(
-                                  color: colors.primary,
-                                ),
-                              ),
-                            ),
+                                      _item.onEditSelected!();
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: 55,
+                                      decoration: BoxDecoration(
+                                        color: colors.primary,
+                                        borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          getTranslated(context, 'EDIT')!,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
 
-                            const VerticalDivider(thickness: 5),
-                            GestureDetector(
-                              onTap: (){
-                                _item.onDeleteSelected!();
-                              },
-                              child: Text(
-                                getTranslated(context, 'DELETE')!,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: colors.primary,
-                                ),
+                                  const VerticalDivider(thickness: 5),
+                                  GestureDetector(
+                                    onTap: (){
+                                      _item.onDeleteSelected!();
+                                    },
+                                    child: Icon(
+                                     Icons.delete_outline,
+                                      color: Colors.grey,
+                                      size: 37,
+
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

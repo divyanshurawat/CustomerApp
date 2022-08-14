@@ -1,18 +1,18 @@
 // import 'dart:async';
 // import 'dart:convert';
-// import 'package:eshop_multivendor/widgets/star_rating.dart';
+// import 'package:connect/widgets/star_rating.dart';
 // import 'package:flutter/material.dart';
 // import 'dart:io';
 // import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:eshop_multivendor/Helper/SqliteData.dart';
-// import 'package:eshop_multivendor/Provider/CartProvider.dart';
-// import 'package:eshop_multivendor/Provider/FavoriteProvider.dart';
-// import 'package:eshop_multivendor/Provider/HomeProvider.dart';
-// import 'package:eshop_multivendor/Provider/ProductDetailProvider.dart';
-// import 'package:eshop_multivendor/Provider/UserProvider.dart';
-// import 'package:eshop_multivendor/Screen/Cart.dart';
-// import 'package:eshop_multivendor/Screen/CompareList.dart';
-// import 'package:eshop_multivendor/Screen/ReviewList.dart';
+// import 'package:connect/Helper/SqliteData.dart';
+// import 'package:connect/Provider/CartProvider.dart';
+// import 'package:connect/Provider/FavoriteProvider.dart';
+// import 'package:connect/Provider/HomeProvider.dart';
+// import 'package:connect/Provider/ProductDetailProvider.dart';
+// import 'package:connect/Provider/UserProvider.dart';
+// import 'package:connect/Screen/Cart.dart';
+// import 'package:connect/Screen/CompareList.dart';
+// import 'package:connect/Screen/ReviewList.dart';
 // import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 // import 'package:flutter/cupertino.dart';
 // //import 'package:flutter_html_table/flutter_html_table.dart';
@@ -49,7 +49,7 @@
 // import 'Search.dart';
 // import 'Seller_Details.dart';
 // import 'package:html/dom.dart' as dom;
-// import 'package:eshop_multivendor/widgets/product_details_new.dart';
+// import 'package:connect/widgets/product_details_new.dart';
 
 // class ProductDetail extends StatefulWidget {
 //   final Product? model;

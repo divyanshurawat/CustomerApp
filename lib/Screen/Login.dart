@@ -8,6 +8,9 @@ import 'package:eshop_multivendor/Provider/FavoriteProvider.dart';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
 import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Screen/SendOtp.dart';
+import 'package:eshop_multivendor/Screen/SignUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +22,9 @@ import '../Helper/AppBtn.dart';
 import '../Helper/Color.dart';
 import '../Helper/Constant.dart';
 import '../Helper/Session.dart';
+import '../Helper/call_button.dart';
+import 'HomePage.dart';
+import 'Verify_Otp.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -31,11 +37,20 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final mobileController = TextEditingController();
   final passwordController = TextEditingController();
+  final otpController = TextEditingController();
+
   String? countryName;
+  bool
+  buttonPressed =false;
+
+  String? verificationID;
   FocusNode? passFocus, monoFocus = FocusNode();
+                        final GlobalKey<FormState> _otpformkey = GlobalKey<FormState>();
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool visible = false;
+  bool isDialog = false;
+  bool isPassword = true;
   String? password,
       mobile,
       username,
@@ -48,7 +63,9 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       address,
       latitude,
       longitude,
-      image;
+      image,
+      active,
+      otp,gstno, aadhar;
   bool _isNetworkAvail = true;
   Animation? buttonSqueezeanimation;
 
@@ -104,11 +121,21 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       checkNetwork();
     }
   }
+  void validateAndSubmitOTP() async {
+    if (validate()) {
+      _playAnimation();
+      checkNetwork();
+    }
+  }
 
   Future<void> checkNetwork() async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      getLoginUser();
+      if (isPassword) {
+        getLoginUser();
+      } else {
+        getLoginOTPUser();
+      }
     } else {
       Future.delayed(const Duration(seconds: 2)).then((_) async {
         await buttonController!.reverse();
@@ -123,6 +150,15 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
   bool validateAndSave() {
     final form = _formkey.currentState!;
+    form.save();
+    if (form.validate()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool validate() {
+    final form = _otpformkey.currentState!;
     form.save();
     if (form.validate()) {
       return true;
@@ -185,6 +221,126 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
     );
   }
 
+  Future<void> getLoginOTPUser() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    var data = {MOBILE: mobileController.text, FCM_ID: token};
+    print("parameter : $data");
+    Response response =
+        await post(getMobileLoginApi, body: data, headers: headers)
+            .timeout(const Duration(seconds: timeOut));
+    var getdata = json.decode(response.body);
+    print("getdata : $getdata");
+    bool error = getdata['error'];
+    String? msg = getdata['message'];
+    await buttonController!.reverse();
+    if (!error) {
+  //    setSnackbar(msg!, context);
+
+
+      var i = getdata['data'][0];
+      id = i[ID];
+      username = i[USERNAME];
+      email = i[EMAIL];
+      mobile = i[MOBILE];
+      city = i[CITY];
+      area = i[AREA];
+      address = i[ADDRESS];
+      pincode = i[PINCODE];
+      latitude = i[LATITUDE];
+      longitude = i[LONGITUDE];
+      image = i[IMAGE];
+      active = i[ACTIVE];
+      gstno= i[GSTNO];
+      aadhar=i[AADHAAR];
+
+
+      CUR_USERID = id;
+     // print(active);
+      print(aadhar);
+  bool vale=  await  Navigator.push(
+          context, MaterialPageRoute(builder: (context) => VerifyOtp(mobileNumber: mobileController.text,countryCode: "91",title: "1",)));
+
+      // CUR_USERNAME = username;
+      if(vale) {
+        UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+        userProvider.setName(username ?? '');
+        userProvider.setEmail(email ?? '');
+        userProvider.setProfilePic(image ?? '');
+
+        SettingProvider settingProvider =
+        Provider.of<SettingProvider>(context, listen: false);
+
+        settingProvider.saveUserDetail(
+            id!,
+            username,
+            email,
+            mobile,
+            city,
+            area,
+            gstno,
+            aadhar,
+            address,
+            pincode,
+            latitude,
+            longitude,
+            image,
+            context);
+        offFavAdd().then((value) {
+          db.clearFav();
+          context.read<FavoriteProvider>().setFavlist([]);
+          offCartAdd().then((value) {
+            db.clearCart();
+            offSaveAdd().then((value) {
+              db.clearSaveForLater();
+
+
+              if (active == 1) {
+                setState(() {
+                  isDialog = true;
+                });
+              } else {
+                setState(() {
+                  isDialog = false;
+                });
+              }
+            });
+          });
+        });
+
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+
+      }
+
+
+     ///  Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+       //
+
+    } else {
+    //  setSnackbar(msg!, context);
+      if(msg.toString()=="user doesnot exist") {
+        return showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: Image.asset("assets/images/unverified.png"),
+                content: Text("Your request for approval sends to the admin. Once the admin verifies your profile, you will get a notification."),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("Cancel"),
+                  ),
+                ],
+              ),
+        );
+      }
+    }
+  }
+
   Future<void> getLoginUser() async {
     var data = {MOBILE: mobile, PASSWORD: password};
     print("parameter : $data");
@@ -198,7 +354,9 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
     await buttonController!.reverse();
     if (!error) {
       setSnackbar(msg!, context);
-      var i = getdata['data'][0];
+
+
+        var i = getdata['data'][0];
       id = i[ID];
       username = i[USERNAME];
       email = i[EMAIL];
@@ -210,10 +368,13 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       latitude = i[LATITUDE];
       longitude = i[LONGITUDE];
       image = i[IMAGE];
+      active = i[ACTIVE];
+      gstno= i[GSTNO];
+      aadhar=i[AADHAAR];
 
       CUR_USERID = id;
       // CUR_USERNAME = username;
-
+      print(active);
       UserProvider userProvider =
           Provider.of<UserProvider>(context, listen: false);
       userProvider.setName(username ?? '');
@@ -223,7 +384,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       SettingProvider settingProvider =
           Provider.of<SettingProvider>(context, listen: false);
 
-      settingProvider.saveUserDetail(id!, username, email, mobile, city, area,
+      settingProvider.saveUserDetail(id!, username, email, mobile, city, area,gstno,aadhar,
           address, pincode, latitude, longitude, image, context);
       offFavAdd().then((value) {
         db.clearFav();
@@ -232,12 +393,49 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           db.clearCart();
           offSaveAdd().then((value) {
             db.clearSaveForLater();
-            Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+
+            if (active == 1) {
+              setState(() {
+                isDialog = true;
+              });
+
+              // Navigator.pushReplacementNamed(context, '/home',);
+
+            } else {
+              setState(() {
+                isDialog = false;
+              });
+            }
           });
         });
       });
-    } else {
+
+       Navigator.pushReplacement(
+           context, MaterialPageRoute(builder: (context) => HomePage()));
+       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+
+
+       } else {
+
       setSnackbar(msg!, context);
+      if(msg.toString()=="Account is inactive") {
+        return showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: Image.asset("assets/images/unverified.png"),
+                content: Text("Your request for approval sends to the admin. Once the admin verifies your profile, you will get a notification."),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("Cancel"),
+                  ),
+                ],
+              ),
+        );
+      }
     }
   }
 
@@ -398,7 +596,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           child: Text(
             getTranslated(context, 'INFO_FOR_LOGIN')!,
             style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                color: Theme.of(context).colorScheme.fontColor.withOpacity(0.38),
+                color:
+                    Theme.of(context).colorScheme.fontColor.withOpacity(0.38),
                 fontWeight: FontWeight.bold),
           ),
         ));
@@ -411,11 +610,13 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         height: 53,
         width: double.maxFinite,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.lightWhite,
+          color: Colors.white,
+          border: Border.all(color: Colors.black54),
           borderRadius: BorderRadius.circular(10.0),
         ),
         alignment: Alignment.center,
         child: TextFormField(
+
           onFieldSubmitted: (v) {
             FocusScope.of(context).requestFocus(passFocus);
           },
@@ -427,12 +628,14 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           keyboardType: TextInputType.number,
           controller: mobileController,
           focusNode: monoFocus,
+
           textInputAction: TextInputAction.next,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           decoration: InputDecoration(
+              prefixIcon: Icon(Icons.phone),
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 13,
-                vertical: 5,
+                horizontal: 14,
+                vertical: 18,
               ),
               hintText: getTranslated(
                 context,
@@ -457,6 +660,86 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
     );
   }
 
+  setOTP() {
+    return Form(
+      key:_otpformkey,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 18),
+        child: Container(
+          height: 53,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.black54),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          alignment: Alignment.center,
+          child: TextFormField(
+            //initialValue: nameController.text,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.fontColor.withOpacity(0.7),
+                fontWeight: FontWeight.bold,
+                fontSize: 13),
+            onFieldSubmitted: (v) {
+              FocusScope.of(context).requestFocus(passFocus);
+            },
+
+            keyboardType: TextInputType.number,
+           // obscureText: isShowPass,
+            controller: otpController,
+            focusNode: passFocus,
+            textInputAction: TextInputAction.next,
+            onChanged: (v) {
+              setState(() {
+                isPassword = false;
+              });
+            },
+            validator: (val) => validatePass(
+                val!,
+                "OTP Required",
+                "Please enter six digit otp"),
+            onSaved: (String? value) {
+              otp = value;
+            },
+            decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 15,
+                ),
+                suffixIcon: InkWell(
+                    onTap: () {
+                      setState(() {
+                        // isShowPass = !isShowPass;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 10.0),
+                      child: Icon(
+                        isShowPass ? Icons.visibility : Icons.visibility_off,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .fontColor
+                            .withOpacity(0.4),
+                        size: 22,
+                      ),
+                    )),
+                suffixIconConstraints:
+                    const BoxConstraints(minWidth: 40, maxHeight: 20),
+                hintText: "Requested OTP",
+                hintStyle: TextStyle(
+                    color:
+                        Theme.of(context).colorScheme.fontColor.withOpacity(0.3),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13),
+                fillColor: Theme.of(context).colorScheme.lightWhite,
+                border: InputBorder.none),
+          ),
+        ),
+      ),
+    );
+  }
+
   setPass() {
     return Padding(
       padding: const EdgeInsets.only(top: 18),
@@ -464,7 +747,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         height: 53,
         width: double.maxFinite,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.lightWhite,
+          color: Colors.white,
+          border: Border.all(color: Colors.black54),
           borderRadius: BorderRadius.circular(10.0),
         ),
         alignment: Alignment.center,
@@ -477,6 +761,12 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           onFieldSubmitted: (v) {
             FocusScope.of(context).requestFocus(passFocus);
           },
+          onChanged: (v) {
+            setState(() {
+              isPassword = true;
+            });
+          },
+
           keyboardType: TextInputType.text,
           obscureText: isShowPass,
           controller: passwordController,
@@ -490,9 +780,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
             password = value;
           },
           decoration: InputDecoration(
+              prefixIcon: Icon(Icons.lock),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 13,
-                vertical: 5,
+                vertical: 15,
               ),
               suffixIcon: InkWell(
                   onTap: () {
@@ -524,6 +815,104 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  requestOTPPass() {
+    return buttonPressed?Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Container(
+                height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator()),
+            ],
+          ),
+        ),
+      ],
+    ):Padding(
+        padding: const EdgeInsetsDirectional.only(top: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            InkWell(
+              onTap: ()async {
+                setState(() {
+                  isPassword = false;
+                });
+                if(mobileController.text.length==10){
+                 // getLoginOTPUser();
+
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>VerifyOtp(mobileNumber: mobileController.text,countryCode: '91',countrycode: '91',title: "OTPLogin",)));
+             //  setState(() {
+             //    buttonPressed =true;,
+             //  });
+             //  print(mobile);
+             //
+             //
+             //  await FirebaseAuth.instance.verifyPhoneNumber(
+             //    phoneNumber: '+91${mobileController.text}',
+             //    verificationCompleted: (PhoneAuthCredential credential) {
+             //      setState(() {
+             //        buttonPressed =false;
+             //      });
+             //    },
+             //    verificationFailed: (FirebaseAuthException e) {
+             //      setSnackbar("$e", context) ;
+             //
+             //        setState(() {
+             //          buttonPressed =false;
+             //        });
+             //
+             //
+             //
+             //    },
+             //    codeSent: (String verificationId, int? resendToken) async{
+             //      setState(() {
+             //        buttonPressed =false;
+             //      });
+             //      setSnackbar("Your OTP has been sent", context) ;
+             //
+             //      // Create a PhoneAuthCredential with the code
+             //      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: "${otpController.text}");
+             //
+             //      // Sign the user in (or link) with the credential
+             //      await FirebaseAuth.instance.signInWithCredential(credential);
+             //    },
+             //    codeAutoRetrievalTimeout: (String verificationId) {
+             //      setState(() {
+             //        buttonPressed =false;
+             //      });
+             //    },
+             //  );
+                }else{
+                 setSnackbar("Please enter the mobile number", context) ;
+                }
+
+
+
+
+
+
+                //Navigator.push(
+                //    context,
+                //    CupertinoPageRoute(
+                //        builder: (context) => SendOtp(
+                //          title:
+                //          getTranslated(context, 'FORGOT_PASS_TITLE'),
+                //        )));
+              },
+              child: Text("Request OTP",
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
+            ),
+          ],
+        ));
   }
 
   forgetPass() {
@@ -565,9 +954,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           InkWell(
               onTap: () {
                 Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (BuildContext context) => SendOtp(
-                    title: getTranslated(context, 'SEND_OTP_TITLE'),
-                  ),
+                  builder: (BuildContext context) => SignUp(),
                 ));
               },
               child: Text(
@@ -583,20 +970,25 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
   loginBtn() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 5.0),
       child: Center(
         child: AppBtn(
-
           title: getTranslated(context, 'SIGNIN_LBL'),
           btnAnim: buttonSqueezeanimation,
           btnCntrl: buttonController,
           onBtnSelected: () async {
-            validateAndSubmit();
+            if(isPassword){
+                validateAndSubmit();
+            } else{
+                 validateAndSubmitOTP();
+            }
+
           },
         ),
       ),
     );
   }
+
   skipSignInBtn() {
     return Container(
       padding: const EdgeInsets.only(top: 13),
@@ -620,44 +1012,92 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Theme.of(context).colorScheme.white,
-        key: _scaffoldKey,
-        body: _isNetworkAvail
-            ? SingleChildScrollView(
-                padding: EdgeInsets.only(
-                    top: 43,
-                    left: 23,
-                    right: 23,
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Form(
-                  key: _formkey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          skipSignInBtn(),
-                        ],
-                      ),
+    return SafeArea(
+      child: Scaffold(
+          floatingActionButton: FloatingActionButton(onPressed: () {
+            call_button();
+          },
+            child: Image.asset("assets/images/contact.png"),
+            backgroundColor: colors.primary,
 
-                      getLogo(),
-                      signInTxt(),
-                      signInSubTxt(),
-                      setMobileNo(),
-                      setPass(),
-                      forgetPass(),
-                      loginBtn(),
-                      setDontHaveAcc(),
-                    ],
-                  ),
-                ),
-              )
-            : noInternet(context));
+          ),
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          key: _scaffoldKey,
+          body: Stack(
+            children: [
+              if (_isNetworkAvail) SingleChildScrollView(
+                    child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        decoration: BoxDecoration(color: Colors.white),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: 23, left: 23, right: 23, bottom: 50),
+                          child: SingleChildScrollView(
+                            child: Form(
+                              key: _formkey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      SizedBox(height: 8,)
+                                   //   skipSignInBtn(),
+                                    ],
+                                  ),
+                                  getLogo(),
+                                  signInTxt(),
+                                  signInSubTxt(),
+                                  setMobileNo(),
+                                  setPass(),
+                                  forgetPass(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(height: 1,color: Colors.black12,width: MediaQuery.of(context).size.width/2*0.56,),
+                                      Text("or",style: TextStyle(color: Colors.black45),),
+
+                                      Container(height: 1,color: Colors.black12,width: MediaQuery.of(context).size.width/2*0.56,)
+
+                                    ],
+                                  ),
+                                 // setOTP(),
+
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      requestOTPPass()
+
+                                    ],
+                                  ),
+                                  loginBtn(),
+                                  setDontHaveAcc(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ) else noInternet(context),
+
+              isDialog?AlertDialog(title: Text(""),):Text("")
+              //    active==null?Text(""):isDialog?AlertDialog(
+              //      title: Image.asset("assets/images/unverified.png"),
+              //      content: Text("You are not verified user. Wait for the approval from admin"),
+              //
+              //    ):AlertDialog(
+              //       title: Image.asset("assets/images/verified.png"),
+              //       content: Text("You are successfully Verified"),
+              //
+              //     )
+            ],
+          )),
+    );
   }
 
   getLoginContainer() {
@@ -717,8 +1157,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         width: 150,
         height: 150,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: Color(0xff1273ba),
-            borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(
+            color: Color(0xff1273ba), borderRadius: BorderRadius.circular(20)),
         child: Center(
           child: Image.asset(
             'assets/images/logorect.png',

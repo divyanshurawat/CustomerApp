@@ -191,7 +191,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: getSimpleAppBar(getTranslated(context, 'ADDRESS_LBL')!, context),
+      appBar: getSimpleAddressAppBar(getTranslated(context, 'ADDRESS_LBL')!, context),
       body: _isNetworkAvail ? _showContent() : noInternet(context),
     );
   }

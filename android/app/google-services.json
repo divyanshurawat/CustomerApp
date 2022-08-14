@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1027585998893",
-    "project_id": "webwire-7e467",
-    "storage_bucket": "webwire-7e467.appspot.com"
+    "project_number": "381767405102",
+    "project_id": "stepwires",
+    "storage_bucket": "stepwires.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1027585998893:android:8beb0fec3917c59caeb8a4",
+        "mobilesdk_app_id": "1:381767405102:android:b2efa2377ac520432799bf",
         "android_client_info": {
-          "package_name": "eShop.multivendor.customer"
+          "package_name": "com.step.connect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1027585998893-1quls95tahisptrndb7eblk3u9mslg57.apps.googleusercontent.com",
+          "client_id": "381767405102-3kl9av2778nqee56b51q1293mmi70lvo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCya7RGdbYrCzFMRp4AHrvLpKyzb-IuohA"
+          "current_key": "AIzaSyBhEBDBwFqeIIgPpFTLAkFSLKrerlN8KWM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1027585998893-1quls95tahisptrndb7eblk3u9mslg57.apps.googleusercontent.com",
+              "client_id": "381767405102-3kl9av2778nqee56b51q1293mmi70lvo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

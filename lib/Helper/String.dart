@@ -4,6 +4,8 @@ import 'package:eshop_multivendor/Helper/Constant.dart';
 
 final Uri getSellerApi = Uri.parse('${baseUrl}get_sellers');
 final Uri getSliderApi = Uri.parse('${baseUrl}get_slider_images');
+final Uri getMainApi = Uri.parse('${baseUrl}get_main_image');
+
 final Uri getCatApi = Uri.parse('${baseUrl}get_categories');
 
 final Uri getSectionApi = Uri.parse('${baseUrl}get_sections');
@@ -13,6 +15,9 @@ final Uri getSubcatApi =
 final Uri getProductApi = Uri.parse('${baseUrl}get_products');
 final Uri manageCartApi = Uri.parse('${baseUrl}manage_cart');
 final Uri getUserLoginApi = Uri.parse('${baseUrl}login');
+final Uri getMobileLoginApi = Uri.parse('${baseUrl}mobile_login');
+final Uri getUserSignUpApi2 = Uri.parse('${baseUrl}register_user_mobile');
+
 final Uri getUserSignUpApi = Uri.parse('${baseUrl}register_user');
 final Uri getVerifyUserApi = Uri.parse('${baseUrl}verify_user');
 final Uri setFavoriteApi = Uri.parse('${baseUrl}add_to_favorites');
@@ -151,10 +156,14 @@ const String USER_NAME = 'user_name';
 const String USERNAME = 'username';
 const String ADDRESS = 'address';
 const String EMAIL = 'email';
+const String GSTNO = 'gstno';
+const String AADHAAR = 'aadhar';
 const String MOBILE = 'mobile';
 const String CITY = 'city';
 const String DOB = 'dob';
 const String AREA = 'area';
+const String FCM = 'fcm_id';
+
 const String PASSWORD = 'password';
 const String STREET = 'street';
 const String PINCODE = 'pincode';
@@ -253,6 +262,7 @@ const String AMOUNT = 'amount';
 const String CONTACT = 'contact';
 const String TXNID = 'txn_id';
 const String SUCCESS = 'Success';
+const String ACTIVE = 'active';
 const String ACTIVE_STATUS = 'active_status';
 const String WAITING = 'awaiting';
 const String TRANS_TYPE = 'transaction_type';

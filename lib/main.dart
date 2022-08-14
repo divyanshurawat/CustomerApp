@@ -217,7 +217,7 @@ class _MyAppState extends State<MyApp> {
           initialRoute: '/',
           routes: {
             '/': (context) => const Splash(),
-            '/home': (context) => const Dashboard(),
+            '/home': (context) =>  Dashboard(),
           },
           darkTheme: ThemeData(
             canvasColor: colors.darkColor,

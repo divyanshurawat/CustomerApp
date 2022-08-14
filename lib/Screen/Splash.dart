@@ -31,7 +31,7 @@ class _SplashScreen extends State<Splash> {
     ));
 
     super.initState();
-   startTime();
+    startTime();
   }
 
   @override
@@ -51,9 +51,15 @@ class _SplashScreen extends State<Splash> {
             child: Center(
 
                 child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                    color: Color(0xff1273ba),
+                  ),
+                  height: 200,
+                  width: 200,
 
                   child: Image.asset(
-                    'assets/images/StepLogoTransparent.png',
+                    'assets/images/StepLogo.jpeg',
                     width: 200,
                     height: 200,
                   ),
@@ -68,7 +74,7 @@ class _SplashScreen extends State<Splash> {
   }
 
   startTime() async {
-    var duration = const Duration(seconds: 2);
+    var duration = const Duration(seconds: 5);
     return Timer(duration, navigationPage);
   }
 

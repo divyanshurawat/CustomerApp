@@ -19,6 +19,8 @@ import '../Helper/AppBtn.dart';
 import '../Helper/Color.dart';
 import '../Helper/Constant.dart';
 import '../Helper/Session.dart';
+import 'Set_Password.dart';
+import 'SignUp.dart';
 
 class SendOtp extends StatefulWidget {
   String? title;
@@ -148,13 +150,14 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
       bool? error = getdata['error'];
       String? msg = getdata['message'];
       await buttonController!.reverse();
+      print(getdata);
 
       SettingProvider settingsProvider =
           Provider.of<SettingProvider>(context, listen: false);
 
       if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
         if (!error!) {
-          setSnackbar(msg!, context);
+         // setSnackbar(msg!, context);
 
           // settingsProvider.setPrefrence(MOBILE, mobile!);
           // settingsProvider.setPrefrence(COUNTRY_CODE, countrycode!);
@@ -294,6 +297,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     return TextFormField(
         keyboardType: TextInputType.number,
         controller: mobileController,
+
         style: Theme.of(context).textTheme.subtitle2!.copyWith(
             color: Theme.of(context).colorScheme.fontColor,
             fontWeight: FontWeight.normal),
@@ -312,9 +316,9 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
               fontWeight: FontWeight.normal),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-          // focusedBorder: OutlineInputBorder(
-          //   borderSide: BorderSide(color: Theme.of(context).colorScheme.lightWhite),
-          // ),
+        //  focusedBorder: OutlineInputBorder(
+        //    borderSide: BorderSide(color: Theme.of(context).colorScheme.lightWhite),
+        //  ),
           focusedBorder: UnderlineInputBorder(
             borderSide: const BorderSide(color: colors.primary),
             borderRadius: BorderRadius.circular(7.0),
@@ -338,7 +342,9 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             btnAnim: buttonSqueezeanimation,
             btnCntrl: buttonController,
             onBtnSelected: () async {
-              validateAndSubmit();
+           //   Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));
+
+                 validateAndSubmit();
             }),
       ),
     );
@@ -562,49 +568,46 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
           color: Theme.of(context).colorScheme.white,
           child: Form(
             key: _formkey,
-            child: ScrollConfiguration(
-              behavior: MyBehavior(),
-              child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 2,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            widget.title ==
-                                    getTranslated(context, 'SEND_OTP_TITLE')
-                                ? getTranslated(context, 'SIGN_UP_LBL')!
-                                : getTranslated(
-                                    context, 'FORGOT_PASSWORDTITILE')!,
-                            style: const TextStyle(
-                              color: colors.primary,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 2,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          widget.title ==
+                                  getTranslated(context, 'SEND_OTP_TITLE')
+                              ? getTranslated(context, 'SIGN_UP_LBL')!
+                              : getTranslated(
+                                  context, 'FORGOT_PASSWORDTITILE')!,
+                          style: const TextStyle(
+                            color: colors.primary,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      // setMobileNo(),
-                      // setPass(),
-                      // loginBtn(),
-                      verifyCodeTxt(),
-                      setCodeWithMono(),
-                      verifyBtn(),
-                      termAndPolicyTxt(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                    ],
-                  ),
+                    ),
+                    // setMobileNo(),
+                    // setPass(),
+                    // loginBtn(),
+                    verifyCodeTxt(),
+                    setCodeWithMono(),
+                    verifyBtn(),
+                    termAndPolicyTxt(),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.10,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -616,20 +619,13 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   Widget getLogo() {
     return Center(
-      child: Container(
-        width: 150,
-        height: 150,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(color: Color(0xff1273ba),
-        borderRadius: BorderRadius.circular(20)),
-        child: Center(
-          child: Image.asset(
-            'assets/images/logorect.png',
-            alignment: Alignment.center,
-            height: 250,
-            width: 250,
-            fit: BoxFit.fill,
-          ),
+      child: Center(
+        child: Image.asset(
+          'assets/images/forgot_password.png',
+          alignment: Alignment.center,
+           scale: 3,
+
+          fit: BoxFit.fill,
         ),
       ),
     );

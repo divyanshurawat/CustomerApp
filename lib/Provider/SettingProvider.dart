@@ -16,6 +16,8 @@ class SettingProvider {
   String? get userId => _sharedPreferences.getString(ID);
 
   String get userName => _sharedPreferences.getString(USERNAME) ?? '';
+  String get gstNo => _sharedPreferences.getString(GSTNO) ?? '';
+  String get aadharNo => _sharedPreferences.getString(AADHAAR) ?? '';
 
   String get mobile => _sharedPreferences.getString(MOBILE) ?? '';
 
@@ -65,6 +67,8 @@ class SettingProvider {
     userProvider.setProfilePic('');
     userProvider.setMobile('');
     userProvider.setEmail('');
+    userProvider.setGST('');
+    userProvider.setAadhar('');
     await _sharedPreferences.clear();
   }
 
@@ -75,6 +79,8 @@ class SettingProvider {
       String? mobile,
       String? city,
       String? area,
+      String? gstno,
+      String? aadharno,
       String? address,
       String? pincode,
       String? latitude,
@@ -85,6 +91,9 @@ class SettingProvider {
     waitList.add(_sharedPreferences.setString(ID, userId));
     waitList.add(_sharedPreferences.setString(USERNAME, name ?? ''));
     waitList.add(_sharedPreferences.setString(EMAIL, email ?? ''));
+    waitList.add(_sharedPreferences.setString(GSTNO, gstno?? ''));
+    waitList.add(_sharedPreferences.setString(AADHAAR, aadharno?? ''));
+
     waitList.add(_sharedPreferences.setString(MOBILE, mobile ?? ''));
     waitList.add(_sharedPreferences.setString(CITY, city ?? ''));
     waitList.add(_sharedPreferences.setString(AREA, area ?? ''));
@@ -102,6 +111,9 @@ class SettingProvider {
     userProvider.setProfilePic(image ?? '');
     userProvider.setMobile(mobile ?? '');
     userProvider.setEmail(email ?? '');
+    userProvider.setGST(gstno ?? '');
+    userProvider.setAadhar(aadharno ?? '');
+
     await Future.wait(waitList);
   }
 }

@@ -40,7 +40,7 @@ class DatabaseHelper {
   //connect with sql database
   Future<Database> initDb() async {
     var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, 'eShop.db');
+    var path = join(databasesPath, 'com.db');
 
     // Check if the database exists
     var exists = await databaseExists(path);
@@ -52,7 +52,7 @@ class DatabaseHelper {
       } catch (_) {}
 
       // Copy from asset
-      ByteData data = await rootBundle.load(join('assets', 'eShop.db'));
+      ByteData data = await rootBundle.load(join('assets', 'com.db'));
       List<int> bytes =
       data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 

@@ -7,6 +7,7 @@ class SectionModel {
       varientId,
       qty,
       productId,
+  margin,
       perItemTotal,
       perItemPrice,
       singleItemNetAmount,
@@ -33,6 +34,7 @@ class SectionModel {
       this.perItemTotal,
       this.perItemPrice,
       this.style,
+        this.margin,
       this.totalItem,
       this.offset,
       this.selectedId,
@@ -62,6 +64,7 @@ class SectionModel {
         productList: productList,
         offset: 0,
         totalItem: 0,
+
         filterList: filterList,
         selectedId: selected);
   }
@@ -78,6 +81,7 @@ class SectionModel {
       perItemTotal: '0',
       perItemPrice: '0',
       productList: productList,
+      margin: '0',
       singleItemNetAmount: parsedJson['net_amount'].toString(),
         singleItemTaxAmount:parsedJson['tax_amount'].toString()
     );

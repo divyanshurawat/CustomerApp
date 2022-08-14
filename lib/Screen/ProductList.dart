@@ -1420,199 +1420,179 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         const Divider(
                           height: 1,
                         ),
-                        Positioned.directional(
-                          textDirection: Directionality.of(context),
-                          end: 0,
-                          // bottom: -18,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              model.availability == '0' && !cartBtnList
-                                  ? Container()
-                                  : _controller[index].text == '0'
-                                      ? InkWell(
-                                          onTap: () {
-                                            if (_isProgress == false) {
-                                              addToCart(
-                                                  index,
-                                                  (int.parse(_controller[index]
-                                                              .text) +
-                                                          int.parse(model
-                                                              .qtyStepSize!))
-                                                      .toString(),
-                                                  1);
-                                            }
-                                          },
-                                          child: Card(
-                                            elevation: 1,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
-                                            ),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                Icons.shopping_cart_outlined,
-                                                size: 15,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.only(
-                                                  start: 3.0,
-                                                  bottom: 5,
-                                                  top: 3),
-                                          child: Row(
-                                            children: <Widget>[
-                                              InkWell(
-                                                child: Card(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            50),
-                                                  ),
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: Icon(
-                                                      Icons.remove,
-                                                      size: 15,
-                                                    ),
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  if (_isProgress == false &&
-                                                      (int.parse(
-                                                              _controller[index]
-                                                                  .text) >
-                                                          0)) {
-                                                    removeFromCart(index);
-                                                  }
-                                                },
-                                              ),
-                                              Container(
-                                                width: 37,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  color: colors.white70,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    Selector<
-                                                        CartProvider,
-                                                        Tuple2<List<String?>,
-                                                            String?>>(
-                                                      builder: (context, data,
-                                                          child) {
-                                                        return TextField(
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          readOnly: true,
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .fontColor),
-                                                          controller:
-                                                              _controller[
-                                                                  index],
-                                                          decoration:
-                                                              const InputDecoration(
-                                                            border: InputBorder
-                                                                .none,
-                                                          ),
-                                                        );
-                                                      },
-                                                      selector: (_, provider) =>
-                                                          Tuple2(
-                                                              provider
-                                                                  .cartIdList,
-                                                              provider.qtyList(
-                                                                  model.id!,
-                                                                  model
-                                                                      .prVarientList![
-                                                                          0]
-                                                                      .id!)),
-                                                    ),
-                                                    PopupMenuButton<String>(
-                                                      tooltip: '',
-                                                      icon: const Icon(
-                                                        Icons.arrow_drop_down,
-                                                        size: 0,
-                                                      ),
-                                                      onSelected:
-                                                          (String value) {
-                                                        if (_isProgress ==
-                                                            false) {
-                                                          addToCart(
-                                                              index, value, 2);
-                                                        }
-                                                      },
-                                                      itemBuilder: (BuildContext
-                                                          context) {
-                                                        return model
-                                                            .itemsCounter!
-                                                            .map<
-                                                                    PopupMenuItem<
-                                                                        String>>(
-                                                                (String value) {
-                                                          return PopupMenuItem(
-                                                              value: value,
-                                                              child: Text(value,
-                                                                  style: TextStyle(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .fontColor)));
-                                                        }).toList();
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ), // ),
-
-                                              InkWell(
-                                                child: Card(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            50),
-                                                  ),
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: Icon(
-                                                      Icons.add,
-                                                      size: 15,
-                                                    ),
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  if (_isProgress == false) {
-                                                    addToCart(
-                                                        index,
-                                                        (int.parse(_controller[
-                                                                        index]
-                                                                    .text) +
-                                                                int.parse(model
-                                                                    .qtyStepSize!))
-                                                            .toString(),
-                                                        2);
-                                                  }
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                        ),
-
-                            ],
-                          ),
-                        ),
+                     //  Positioned.directional(
+                     //    textDirection: Directionality.of(context),
+                     //    end: 0,
+                     //    // bottom: -18,
+                     //    child: Row(
+                     //      mainAxisSize: MainAxisSize.min,
+                     //      children: [
+                     //        model.availability == '0' && !cartBtnList
+                     //            ? Container()
+                     //            : _controller[index].text == '0'
+                     //                ? InkWell(
+                     //                    onTap: () {
+                     //                      if (_isProgress == false) {
+                     //                        addToCart(
+                     //                            index,
+                     //                            (int.parse(_controller[index]
+                     //                                        .text) +
+                     //                                    int.parse(model
+                     //                                        .qtyStepSize!))
+                     //                                .toString(),
+                     //                            1);
+                     //                      }
+                     //                    },
+                     //                    child: Card(
+                     //                      elevation: 1,
+                     //                      shape: RoundedRectangleBorder(
+                     //                        borderRadius:
+                     //                            BorderRadius.circular(50),
+                     //                      ),
+                     //                      child: const Padding(
+                     //                        padding: EdgeInsets.all(8.0),
+                     //                        child: Icon(
+                     //                          Icons.shopping_cart_outlined,
+                     //                          size: 15,
+                     //                        ),
+                     //                      ),
+                     //                    ),
+                     //                  )
+                     //                : Padding(
+                     //                    padding:
+                     //                        const EdgeInsetsDirectional.only(
+                     //                            start: 3.0,
+                     //                            bottom: 5,
+                     //                            top: 3),
+                     //                    child: Row(
+                     //                      children: <Widget>[
+                     //                        InkWell(
+                     //                          child: Card(
+                     //                            shape: RoundedRectangleBorder(
+                     //                              borderRadius:
+                     //                                  BorderRadius.circular(
+                     //                                      50),
+                     //                            ),
+                     //                            child: const Padding(
+                     //                              padding:
+                     //                                  EdgeInsets.all(8.0),
+                     //                              child: Icon(
+                     //                                Icons.remove,
+                     //                                size: 15,
+                     //                              ),
+                     //                            ),
+                     //                          ),
+                     //                          onTap: () {
+                     //                            if (_isProgress == false &&
+                     //                                (int.parse(
+                     //                                        _controller[index]
+                     //                                            .text) >
+                     //                                    0)) {
+                     //                              removeFromCart(index);
+                     //                            }
+                     //                          },
+                     //                        ),
+                     //                        Container(
+                     //                          width: 37,
+                     //                          height: 20,
+                     //                          decoration: BoxDecoration(
+                     //                            color: colors.white70,
+                     //                            borderRadius:
+                     //                                BorderRadius.circular(5),
+                     //                          ),
+                     //                          child: Stack(
+                     //                            children: [
+                     //                              Selector<
+                     //                                  CartProvider,
+                     //                                  Tuple2<List<String?>,
+                     //                                      String?>>(
+                     //                                builder: (context, data,
+                     //                                    child) {
+                     //                                  return TextField(
+                     //                                    textAlign:
+                     //                                        TextAlign.center,
+                     //                                    readOnly: true,
+                     //                                    style: TextStyle(
+                     //                                        fontSize: 12,
+                     //                                        color: Theme.of(
+                     //                                                context)
+                     //                                            .colorScheme
+                     //                                            .fontColor),
+                     //                                    controller:
+                     //                                        _controller[
+                     //                                            index],
+                     //                                    decoration:
+                     //                                        const InputDecoration(
+                     //                                      border: InputBorder
+                     //                                          .none,
+                     //                                    ),
+                     //                                  );
+                     //                                },
+                     //                                selector: (_, provider) =>
+                     //                                    Tuple2(
+                     //                                        provider
+                     //                                            .cartIdList,
+                     //                                        provider.qtyList(
+                     //                                            model.id!,
+                     //                                            model
+                     //                                                .prVarientList![
+                     //                                                    0]
+                     //                                                .id!)),
+                     //                              ),
+                     //                              PopupMenuButton<String>(
+                     //                                tooltip: '',
+                     //                                icon: const Icon(
+                     //                                  Icons.arrow_drop_down,
+                     //                                  size: 0,
+                     //                                ),
+                     //                                onSelected:
+                     //                                    (String value) {
+                     //                                  if (_isProgress ==
+                     //                                      false) {
+                     //                                    addToCart(
+                     //                                        index, value, 2);
+                     //                                  }
+                     //                                },
+                     //                                itemBuilder: (BuildContext
+                     //                                    context) {
+                     //                                  return model
+                     //                                      .itemsCounter!
+                     //                                      .map<
+                     //                                              PopupMenuItem<
+                     //                                                  String>>(
+                     //                                          (String value) {
+                     //                                    return PopupMenuItem(
+                     //                                        value: value,
+                     //                                        child: Text(value,
+                     //                                            style: TextStyle(
+                     //                                                color: Theme.of(
+                     //                                                        context)
+                     //                                                    .colorScheme
+                     //                                                    .fontColor)));
+                     //                                  }).toList();
+                     //                                },
+                     //                              ),
+                     //                            ],
+                     //                          ),
+                     //                        ), // ),
+                     //
+                     //                        InkWell(
+                     //                          child: Card(
+                     //                            shape: RoundedRectangleBorder(
+                     //                              borderRadius:
+                     //                                  BorderRadius.circular(
+                     //                                      50),
+                     //                            ),
+                     //                            child: const Padding(
+                     //                              padding:
+                     //                                  EdgeInsets.all(8.0),
+                     //                              child: Icon(
+                     //                                Icons.add,
+                     //                                size: 15,
+                     //                              ),
+                     //                            ),
+                     //                          ),
+                     //  ),
                         Positioned.directional(
                             textDirection: Directionality.of(context),
                             top: 0,
@@ -1698,7 +1678,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     child: Text(
                       productList[index].name!,
                       style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Theme.of(context).colorScheme.lightBlack,
+                        color: Colors.black87,
                         fontSize: textFontSize12,
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -1718,9 +1698,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         Text(
                           ' ${getPriceFormat(context, price)!}',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.blue,
+                            color: Colors.blue,
                             fontSize: textFontSize14,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             fontStyle: FontStyle.normal,
                           ),
                         ),

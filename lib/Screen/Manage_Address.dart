@@ -14,6 +14,7 @@ import '../Helper/String.dart';
 import '../Model/User.dart';
 import 'Add_Address.dart';
 import 'Cart.dart';
+import 'Favorite.dart';
 
 class ManageAddress extends StatefulWidget {
   final bool? home;
@@ -180,7 +181,35 @@ class StateAddress extends State<ManageAddress> with TickerProviderStateMixin {
     return Scaffold(
       key: _scaffoldKey,
       appBar:
-          getSimpleAppBar(getTranslated(context, 'SHIPP_ADDRESS')!, context),
+      AppBar(
+        titleSpacing: 0,
+        backgroundColor: colors.primary,
+        leading: Builder(builder: (BuildContext context) {
+          return Container(
+            margin: const EdgeInsets.all(10),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(4),
+              onTap: () => Navigator.of(context).pop(),
+              child: const Center(
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        }),
+        title: Text(
+          "Address",
+          style:
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+        ),
+        actions: [
+          //Customer Support
+
+
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: colors.primary,
         onPressed: () async {

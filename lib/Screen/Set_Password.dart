@@ -472,32 +472,25 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
         key: _scaffoldKey,
         body: _isNetworkAvail
             ? Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(
-                top: 23,
-                left: 23,
-                right: 23,
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Form(
-              key: _formkey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  getLogo(),
-                  forgotpassTxt(),
-                  setPass(),
-                  setConfirmpss(),
-                  setPassBtn(),
-                  /* signUpTxt(),
-                  verifyCodeTxt(),
-                  setCodeWithMono(),
-                  verifyBtn(),*/
-                  /* SizedBox(
-                          height: deviceHeight! * 0.1,
-                        ),
-                        termAndPolicyTxt(),*/
-                ],
-              ),
+          child: Form(
+            key: _formkey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                getLogo(),
+                forgotpassTxt(),
+                setPass(),
+                setConfirmpss(),
+                setPassBtn(),
+                /* signUpTxt(),
+                verifyCodeTxt(),
+                setCodeWithMono(),
+                verifyBtn(),*/
+                /* SizedBox(
+                        height: deviceHeight! * 0.1,
+                      ),
+                      termAndPolicyTxt(),*/
+              ],
             ),
           ),
         ) /*Stack(
@@ -560,29 +553,24 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
           color: Theme.of(context).colorScheme.white,
           child: Form(
             key: _formkey,
-            child: ScrollConfiguration(
-              behavior: MyBehavior(),
-              child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 2,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 2,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.10,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                      forgotpassTxt(),
-                      setPass(),
-                      setConfirmpss(),
-                      setPassBtn(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                    ],
+                  forgotpassTxt(),
+                  setPass(),
+                  setConfirmpss(),
+                  setPassBtn(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.10,
                   ),
-                ),
+                ],
               ),
             ),
           ),

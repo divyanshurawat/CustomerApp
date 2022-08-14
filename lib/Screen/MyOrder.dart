@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eshop_multivendor/Helper/call_button.dart';
 import 'package:eshop_multivendor/Model/Order_Model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
 import '../Helper/AppBtn.dart';
@@ -17,7 +19,8 @@ import 'Login.dart';
 import 'OrderDetail.dart';
 
 class MyOrder extends StatefulWidget {
-  const MyOrder({Key? key}) : super(key: key);
+  final bool? fromDashboard;
+  const MyOrder({Key? key,this.fromDashboard}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -63,6 +66,10 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
     offset = 0;
     total = 0;
     getOrder();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      // navigation bar color
+      statusBarColor: colors.primary, // status bar color
+    ));
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
 
@@ -160,8 +167,13 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+     floatingActionButton: FloatingActionButton(
+       backgroundColor: colors.primary,
+       onPressed: ()=>call_button(),
+     child: Image.asset("assets/images/contact.png"),
+     ),
       backgroundColor: Theme.of(context).colorScheme.lightWhite,
-      appBar: getAppBar(getTranslated(context, 'MY_ORDERS_LBL')!, context),
+      appBar: widget.fromDashboard!=null?getAppImplyBar(getTranslated(context, 'MY_ORDERS_LBL')!, context):getAppBar(getTranslated(context, 'MY_ORDERS_LBL')!, context),
       body: _isNetworkAvail
           ? _isLoading
               ? shimmer(context)
@@ -192,6 +204,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                               ),
                               hintText: getTranslated(
                                   context, 'FIND_ORDER_ITEMS_LBL'),
+
                               hintStyle: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -400,104 +413,188 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
     if (orderItem != null) {
       String? sDate = orderItem.listDate!.last;
       String? proStatus = orderItem.listStatus!.last;
+      String? qty = orderItem.qty;
+      String? price = orderItem.price;
+
       if (proStatus == 'received') {
         proStatus = 'order placed';
       }
       String name = orderItem.name ?? '';
       name = "$name ${searchList[index].itemList!.length > 1 ? " and more items" : ""} ";
 
-      return Card(
-        elevation: 0,
-        //margin: EdgeInsets.all(5.0),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(7),
-          child: Column(children: <Widget>[
-            Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Hero(
-                  tag: '$index${orderItem.id}',
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(7.0),
-                        topLeft: Radius.circular(7.0)),
-                    child: FadeInImage(
-                      fadeInDuration: const Duration(milliseconds: 150),
-                      image: CachedNetworkImageProvider(orderItem.image!),
-                      height: 100.0,
-                      width: 100.0,
-                      fit: BoxFit.cover,
-                      imageErrorBuilder: (context, error, stackTrace) =>
-                          erroWidget(90),
+      return Padding(
+        padding: const EdgeInsets.only(top: 18.0),
+        child: Container(
+          height: 250,
+          child: Card(
+            elevation: 1,
 
-                      // errorWidget:(context, url,e) => placeHolder(90) ,
-                      placeholder: placeHolder(90),
-                    ),
-                  )),
-              Expanded(
-                  flex: 9,
-                  child: Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                          start: 10.0, end: 5.0, bottom: 8.0, top: 8.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              '$proStatus on $sDate',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .lightBlack),
-                            ),
-                            Padding(
-                                padding:
-                                    const EdgeInsetsDirectional.only(top: 10.0),
-                                child: Text(
-                                  name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(
+
+            //margin: EdgeInsets.all(5.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(7),
+              child: Column(children: <Widget>[
+                Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                 // Hero(
+                 //     tag: '$index${orderItem.id}',
+                 //     child: ClipRRect(
+                 //       borderRadius: const BorderRadius.only(
+                 //           bottomLeft: Radius.circular(7.0),
+                 //           topLeft: Radius.circular(7.0)),
+                 //       child: FadeInImage(
+                 //         fadeInDuration: const Duration(milliseconds: 150),
+                 //         image: CachedNetworkImageProvider(orderItem.image!),
+                 //         height: 100.0,
+                 //         width: 100.0,
+                 //         fit: BoxFit.cover,
+                 //         imageErrorBuilder: (context, error, stackTrace) =>
+                 //             erroWidget(90),
+                 //
+                 //         // errorWidget:(context, url,e) => placeHolder(90) ,
+                 //         placeholder: placeHolder(90),
+                 //       ),
+                 //     )),
+                  Expanded(
+                      flex: 9,
+                      child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                              start: 10.0, end: 5.0, bottom: 0, top: 8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+
+                              children: <Widget>[
+                                Padding(
+                                    padding:
+                                    EdgeInsetsDirectional.only(top: 10.0,end:12.0,start: 12.0),
+                                    child: Text(
+                                      name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .lightBlack2,
-                                          fontWeight: FontWeight.normal),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                          ]))),
-              const Spacer(),
-              const Padding(
-                padding: EdgeInsets.only(right: 3.0),
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: colors.primary,
-                  size: 15,
-                ),
-              )
-            ]),
-          ]),
-          onTap: () async {
-            FocusScope.of(context).unfocus();
-            await Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context) => OrderDetail(model: searchList[index])),
-            ).then((result) {
-              if (mounted && result == 'update') {
-                setState(() {
-                  _isLoading = true;
-                  offset = 0;
-                  total = 0;
-                  searchList.clear();
-                  getOrder();
-                });
-              }
-            });
+                                              .black,
+                                          fontWeight: FontWeight.bold),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(
+                                    'Order at $sDate',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                        color: Colors.black38,fontWeight: FontWeight.bold),
+                                  ),
+                                ),
 
-          },
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Order Status',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.black38,fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        '${proStatus.toUpperCase()}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.black,fontWeight: FontWeight.normal),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Items',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.black38,fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        '$qty',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.black,fontWeight: FontWeight.normal),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Price',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.black38,fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        '${getPriceFormat(context, double.parse(price!))!}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                            color: Colors.blue,fontWeight: FontWeight.bold),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+
+                              ]))),
+
+
+
+                ]),
+              ]),
+              onTap: () async {
+                FocusScope.of(context).unfocus();
+                await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => OrderDetail(model: searchList[index])),
+                ).then((result) {
+                  if (mounted && result == 'update') {
+                    setState(() {
+                      _isLoading = true;
+                      offset = 0;
+                      total = 0;
+                      searchList.clear();
+                      getOrder();
+                    });
+                  }
+                });
+
+              },
+            ),
+          ),
         ),
       );
     } else {

@@ -1,25 +1,44 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:eshop_multivendor/Helper/Color.dart';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
+import 'package:eshop_multivendor/Screen/Add_Address.dart';
+import 'package:eshop_multivendor/Screen/HomePage.dart';
+import 'package:eshop_multivendor/Screen/Login.dart';
 import 'package:eshop_multivendor/Screen/Set_Password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../Helper/AppBtn.dart';
+import '../Helper/Constant.dart';
 import '../Helper/Session.dart';
 import '../Helper/String.dart';
+import '../Provider/UserProvider.dart';
 import 'SignUp.dart';
 
 class VerifyOtp extends StatefulWidget {
-  final String? mobileNumber, countryCode, title;
+  final String? mobileNumber, countryCode, title, mobile,name,email,address,gstno,aadhaar,password,countrycode,referCode,friendCode;
+
 
   const VerifyOtp(
       {Key? key,
       required String this.mobileNumber,
       this.countryCode,
+        this.address,
+        this.gstno,
+        this.name,
+        this.friendCode,
+
+        this.mobile,
+        this.password,
+        this.email,
+        this.aadhaar,
+        this.countrycode,this.referCode,
       this.title})
       : super(key: key);
 
@@ -30,7 +49,7 @@ class VerifyOtp extends StatefulWidget {
 class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
   final dataKey = GlobalKey();
   String? password;
-  String? otp;
+  String? otp,id,mobile,name, email;
   bool isCodeSent = false;
   late String _verificationId;
   String signature = '';
@@ -48,6 +67,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     getUserDetails();
     getSingature();
     _onVerifyCode();
+
     Future.delayed(const Duration(seconds: 60)).then((_) {
       _isClickable = true;
     });
@@ -136,9 +156,13 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     ));
   }
 
+
   void _onVerifyCode() async {
+
+
     if (mounted) {
       setState(() {
+
         isCodeSent = true;
       });
     }
@@ -155,11 +179,10 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
             settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
             settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
             if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
-              Future.delayed(const Duration(seconds: 2)).then((_) {
-                Navigator.pushReplacement(context,
-                    CupertinoPageRoute(builder: (context) => const SignUp()));
-              });
-            } else if (widget.title ==
+           getRegisterUser();
+            } else if(widget.title=='OTPLogin'){
+              getLoginUser();
+            }else if (widget.title ==
                 getTranslated(context, 'FORGOT_PASS_TITLE')) {
               Future.delayed(const Duration(seconds: 2)).then((_) {
                 Navigator.pushReplacement(
@@ -181,6 +204,8 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
         });
       };
     }
+
+
 
     // final PhoneVerificationCompleted verificationCompleted =
     //     (AuthCredential phoneAuthCredential) {
@@ -291,8 +316,219 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       codeAutoRetrievalTimeout: codeAutoRetrievalTimeout(),
     );
   }
+  Future<void> getRegisterUserOTP() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    try {
+      var data = {
+        MOBILE:widget.mobileNumber,
+        NAME: widget.mobileNumber,
+        FCM_ID:token,
+        COUNTRY_CODE: widget.countrycode,
+
+      };
+
+      Response response =
+      await post(getUserSignUpApi2, body: data, headers: headers)
+          .timeout(const Duration(seconds: timeOut));
+
+      var getdata = json.decode(response.body);
+      bool error = getdata['error'];
+      String? msg = getdata['message'];
+      await buttonController!.reverse();
+      if (!error) {
+        setSnackbar(getTranslated(context, 'REGISTER_SUCCESS_MSG')!);
+        var i = getdata['data'][0];
+        print(i);
+
+
+        id = i[ID];
+        name = i[USERNAME];
+        email = i[EMAIL];
+        mobile = i[MOBILE];
+        //countrycode=i[COUNTRY_CODE];
+        CUR_USERID = id;
+        Future.delayed(const Duration(seconds: 1)).then((_) {
+          Navigator.pushReplacement(context,
+              CupertinoPageRoute(builder: (context) => const Login()));
+        });
+        // CUR_USERNAME = name;
+
+        // UserProvider userProvider = context.read<UserProvider>();
+        // userProvider.setName(name ?? '');
+
+        //  SettingProvider settingProvider = context.read<SettingProvider>();
+        //  settingProvider.saveUserDetail(id!, name, email, mobile, city, area,"","",
+        //      address, pincode, latitude, longitude, '', context);
+
+        //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+      } else {
+        setSnackbar(msg!);
+      }
+      if (mounted) setState(() {});
+    } on TimeoutException catch (_) {
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
+      await buttonController!.reverse();
+    }
+  }
+
+  Future<void> getLoginUser() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("hfxgfhx");
+    var data = {MOBILE: widget.mobileNumber, FCM_ID: token};
+    print("parameter : $data");
+    Response response =
+    await post(getMobileLoginApi, body: data, headers: headers)
+        .timeout(const Duration(seconds: timeOut));
+    var getdata = json.decode(response.body);
+    print("getdata : $getdata");
+    bool error = getdata['error'];
+    String? msg = getdata['message'];
+    await buttonController!.reverse();
+    if (!error) {
+
+
+
+      var i = getdata['data'][0];
+      id = i[ID];
+      print(id);
+     // username = i[USERNAME];
+      email = i[EMAIL];
+      mobile = i[MOBILE];
+      latitude = i[LATITUDE];
+      longitude = i[LONGITUDE];
+
+
+      CUR_USERID = id;
+
+      UserProvider userProvider =
+      Provider.of<UserProvider>(context, listen: false);
+      userProvider.setName(mobile ?? '');
+      userProvider.setEmail(email ?? '');
+      userProvider.setProfilePic('' ?? '');
+
+      SettingProvider settingProvider =
+      Provider.of<SettingProvider>(context, listen: false);
+
+      settingProvider.saveUserDetail(id!, mobile, email, mobile, "", "",'',"",
+          '', '', latitude, longitude, '', context);
+
+      print("DOnw");
+
+     Navigator.pushReplacement(
+         context, MaterialPageRoute(builder: (context) => HomePage()));
+     Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+
+
+    } else {
+      print(msg!);
+
+    //  setSnackbar(msg!, context);
+      if(msg.toString()=="Account is inactive") {
+        return showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: Image.asset("assets/images/unverified.png"),
+                content: Text("Your request for approval sends to the admin. Once the admin verifies your profile, you will get a notification."),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("Cancel"),
+                  ),
+                ],
+              ),
+        );
+      }else if(msg.toString()=='user doesnot exist'){
+        getRegisterUserOTP();
+        return showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: Image.asset("assets/images/unverified.png"),
+                content: Text("Your request for approval sends to the admin. Once the admin verifies your profile, you will get a notification."),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("Cancel"),
+                  ),
+                ],
+              ),
+        );
+      }
+    }
+  }
+
+
+  Future<void> getRegisterUser() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    try {
+      var data = {
+        MOBILE:widget.mobile,
+        FCM_ID:token,
+        NAME: widget.name,
+        EMAIL: widget.email,
+        ADDRESS:widget.address,
+        GSTNO:widget.gstno.toString(),
+        AADHAAR:widget.aadhaar.toString(),
+        PASSWORD: widget.password,
+        COUNTRY_CODE: widget.countrycode,
+        REFERCODE: widget.referCode,
+        FRNDCODE: widget.friendCode
+      };
+
+      Response response =
+      await post(getUserSignUpApi, body: data, headers: headers)
+          .timeout(const Duration(seconds: timeOut));
+
+      var getdata = json.decode(response.body);
+      bool error = getdata['error'];
+      String? msg = getdata['message'];
+      await buttonController!.reverse();
+      if (!error) {
+        setSnackbar(getTranslated(context, 'REGISTER_SUCCESS_MSG')!);
+        var i = getdata['data'][0];
+        print(i);
+
+
+        id = i[ID];
+        name = i[USERNAME];
+        email = i[EMAIL];
+        mobile = i[MOBILE];
+        //countrycode=i[COUNTRY_CODE];
+        CUR_USERID = id;
+        Future.delayed(const Duration(seconds: 1)).then((_) {
+          Navigator.pushReplacement(context,
+              CupertinoPageRoute(builder: (context) => const Login()));
+        });
+        // CUR_USERNAME = name;
+
+        // UserProvider userProvider = context.read<UserProvider>();
+        // userProvider.setName(name ?? '');
+
+        //  SettingProvider settingProvider = context.read<SettingProvider>();
+        //  settingProvider.saveUserDetail(id!, name, email, mobile, city, area,"","",
+        //      address, pincode, latitude, longitude, '', context);
+
+        //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+      } else {
+        setSnackbar(msg!);
+      }
+      if (mounted) setState(() {});
+    } on TimeoutException catch (_) {
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
+      await buttonController!.reverse();
+    }
+  }
 
   void _onFormSubmitted() async {
+
+    print('Dtat');
     String code = otp!.trim();
 
     if (code.length == 6) {
@@ -312,10 +548,9 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
           settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
           settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
           if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
-            Future.delayed(const Duration(seconds: 2)).then((_) {
-              Navigator.pushReplacement(context,
-                  CupertinoPageRoute(builder: (context) => const SignUp()));
-            });
+
+            getRegisterUser();
+
           } else if (widget.title ==
               getTranslated(context, 'FORGOT_PASS_TITLE')) {
             Future.delayed(const Duration(seconds: 2)).then((_) {
@@ -325,9 +560,19 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
                       builder: (context) =>
                           SetPass(mobileNumber: widget.mobileNumber!)));
             });
+          }  else if(widget.title=='OTPLogin')  {
+            print('Data');
+
+            getLoginUser();
+           // Navigator.pop(context,true);
+         //   Navigator.pushReplacement(
+         //       context, MaterialPageRoute(builder: (context) => HomePage()));
+         //   Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+
           }
         } else {
           setSnackbar(getTranslated(context, 'OTPERROR')!);
+           //Navigator.pop(context,true);
           await buttonController!.reverse();
         }
       }).catchError((error) async {
@@ -362,63 +607,65 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
   }
 
   monoVarifyText() {
-    return Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: 60.0,
-        ),
-        child: Text(getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline6!
-                .copyWith(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .fontColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 23,
-                letterSpacing: 0.8)));
+    return Center(
+      child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            top: 60.0,
+          ),
+          child: Text(getTranslated(context, 'MOBILE_NUMBER_VARIFICATION')!,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .fontColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 23,
+                  letterSpacing: 0.8))),
+    );
   }
 
   otpText() {
-    return Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: 13.0,
-        ),
+    return Center(
+      child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            top: 13.0,
+          ),
+          child: Text(
+            getTranslated(context, 'SENT_VERIFY_CODE_TO_NO_LBL')!,
+            style: Theme
+                .of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .fontColor
+                  .withOpacity(0.5),
+              fontWeight: FontWeight.bold,
+            ),
+          )),
+    );
+  }
+
+  mobText() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(top: 5.0),
         child: Text(
-          getTranslated(context, 'SENT_VERIFY_CODE_TO_NO_LBL')!,
+          '+${widget.countryCode}-${widget.mobileNumber}',
           style: Theme
               .of(context)
               .textTheme
               .subtitle2!
               .copyWith(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .fontColor
-                .withOpacity(0.5),
+            color: Colors.black87,
             fontWeight: FontWeight.bold,
           ),
-        ));
-  }
-
-  mobText() {
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(top: 5.0),
-      child: Text(
-        '+${widget.countryCode}-${widget.mobileNumber}',
-        style: Theme
-            .of(context)
-            .textTheme
-            .subtitle2!
-            .copyWith(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .fontColor
-              .withOpacity(0.5),
-          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -430,19 +677,16 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       child: PinFieldAutoFill(
         decoration: BoxLooseDecoration(
             textStyle: TextStyle(
+              fontWeight: FontWeight.bold,
                 fontSize: 20, color: Theme
                 .of(context)
                 .colorScheme
                 .fontColor),
-            radius: const Radius.circular(4.0),
+            radius: const Radius.circular(12.0),
             // strokeWidth: 20,
-            gapSpace: 15,
+            gapSpace: 12,
             bgColorBuilder: FixedColorBuilder(
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .lightWhite
-                    .withOpacity(0.4)),
+                Colors.white),
             strokeColorBuilder: FixedColorBuilder(
                 Theme
                     .of(context)
@@ -629,20 +873,13 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
 
   Widget getLogo() {
     return Center(
-      child: Container(
-        width: 150,
-        height: 150,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(color: Color(0xff1273ba),
-            borderRadius: BorderRadius.circular(20)),
-        child: Center(
-          child: Image.asset(
-            'assets/images/logorect.png',
-            alignment: Alignment.center,
-            height: 250,
-            width: 250,
-            fit: BoxFit.fill,
-          ),
+      child: Center(
+        child: Image.asset(
+          'assets/images/forgot_password.png',
+          alignment: Alignment.center,
+          scale: 2,
+
+          fit: BoxFit.fill,
         ),
       ),
     );
