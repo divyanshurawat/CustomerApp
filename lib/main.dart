@@ -10,6 +10,7 @@ import 'package:eshop_multivendor/Provider/HomeProvider.dart';
 import 'package:eshop_multivendor/Provider/ProductDetailProvider.dart';
 import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Provider/explore_provider.dart';
+import 'package:eshop_multivendor/Screen/Login.dart';
 import 'package:eshop_multivendor/Screen/Splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -61,7 +62,7 @@ void main() async {
           return ThemeNotifier(ThemeMode.light);
         }
         return ThemeNotifier(ThemeMode.light);
-       // return ThemeNotifier(theme == LIGHT ? ThemeMode.light : ThemeMode.dark);
+        // return ThemeNotifier(theme == LIGHT ? ThemeMode.light : ThemeMode.dark);
       },
       child: MyApp(sharedPreferences: prefs),
     ),
@@ -100,6 +101,11 @@ class _MyAppState extends State<MyApp> {
         },
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -217,7 +223,8 @@ class _MyAppState extends State<MyApp> {
           initialRoute: '/',
           routes: {
             '/': (context) => const Splash(),
-            '/home': (context) =>  Dashboard(),
+            '/home': (context) => Dashboard(),
+
           },
           darkTheme: ThemeData(
             canvasColor: colors.darkColor,

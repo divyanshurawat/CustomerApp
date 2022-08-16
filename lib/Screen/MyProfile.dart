@@ -116,7 +116,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
     ));
     //print(widget.userUpdate);
 
-
+print("dfg ${CUR_USERID}");
     Future.delayed(Duration.zero, () {
       languageList = [
         getTranslated(context, 'ENGLISH_LAN'),
@@ -164,6 +164,8 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
     String gstno = await settingsProvider.getPrefrence(GSTNO) ?? '';
     String aadhar = await settingsProvider.getPrefrence(AADHAAR) ?? '';
     String address = await settingsProvider.getPrefrence(ADDRESS) ?? '';
+    String useId = await settingsProvider.getPrefrence(USER_ID) ?? '';
+    print(useId);
 
     gstController = TextEditingController(text: gstno);
     aadharController = TextEditingController(text: aadhar);
@@ -642,13 +644,13 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
         // _getDrawerItem(getTranslated(context, 'SHARE_APP')!,
         //     'assets/images/pro_share.svg'),
         // CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
-        CUR_USERID == '' || CUR_USERID == null
-            ? Container()
-            : _getDrawerItem(
-                getTranslated(context, 'DeleteAcoountNow')!,
-                'assets/images/delete_user.svg',
-              ),
-
+     //   CUR_USERID == '' || CUR_USERID == null
+     //       ? Container()
+     //       : _getDrawerItem(
+     //           getTranslated(context, 'DeleteAcoountNow')!,
+     //           'assets/images/delete_user.svg',
+     //         ),
+     //
         CUR_USERID == '' || CUR_USERID == null
             ? Container()
             : _getDrawerLogoutItem(getTranslated(context, 'LOGOUT')!,
@@ -1053,7 +1055,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                   Navigator.pushReplacement(
                     context,
                     CupertinoPageRoute(
-                      builder: (BuildContext context) => Dashboard(),
+                      builder: (BuildContext context) => Login(),
                     ),
                   );
                 },

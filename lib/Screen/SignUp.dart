@@ -147,7 +147,6 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
                 VerifyOtp(
                   mobileNumber: mobile!,
                   countryCode: '91',
-
                   name: name,
                   email: email,
                   mobile: mobile,
@@ -158,8 +157,6 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
                   aadhaar: aadhar,
                   address: address,
                   password: password,
-
-
                   title: getTranslated(context, 'SEND_OTP_TITLE'),
                 )));
   });
@@ -170,8 +167,8 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
       }
      // if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
        // if (error!) {
-          settingsProvider.setPrefrence(MOBILE, mobile!);
-          settingsProvider.setPrefrence(COUNTRY_CODE, countrycode!);
+      //    settingsProvider.setPrefrence(MOBILE, mobile!);
+        //  settingsProvider.setPrefrence(COUNTRY_CODE, countrycode!);
 
         //  getRegisterUser();
         //  Future.delayed(const Duration(seconds: 1)).then((_) {

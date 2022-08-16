@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage>
     user.setName(setting.userName);
     user.setEmail(setting.email);
     user.setProfilePic(setting.profileUrl);
+
     callApi();
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
@@ -237,7 +238,7 @@ class _HomePageState extends State<HomePage>
   }
 
   _getHeading(String title, int index) {
-    print("444444444${title}");
+
     return Padding(
         padding: const EdgeInsets.only(right: 15.0, top: 5.0, left: 15.0),
         child: Column(
@@ -356,7 +357,7 @@ class _HomePageState extends State<HomePage>
 
   _getSection(int i) {
     var orient = MediaQuery.of(context).orientation;
-    print("1213${i}");
+
 
     return sectionList[i].style == DEFAULT
         ? Padding(
@@ -898,7 +899,7 @@ class _HomePageState extends State<HomePage>
   _section() {
     return Selector<HomeProvider, bool>(
       builder: (context, data, child) {
-        print("######${data}");
+
         return data
             ? SizedBox(
                 width: double.infinity,
@@ -1059,11 +1060,13 @@ class _HomePageState extends State<HomePage>
 
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
+
       getSection();
       getSetting();
       getSlider();
       getCat();
       getSeller();
+
 
       getOfferImages();
     } else {
@@ -1145,31 +1148,42 @@ class _HomePageState extends State<HomePage>
   void getSection() {
     Map parameter = {PRODUCT_LIMIT: '6', PRODUCT_OFFSET: '0'};
 
-    if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
-    String curPin = context.read<UserProvider>().curPincode;
-    if (curPin != '') parameter[ZIPCODE] = curPin;
 
-    apiBaseHelper.postAPICall(getSectionApi, parameter).then((getdata) {
-      bool error = getdata['error'];
-      String? msg = getdata['message'];
+    if (CUR_USERID != null) {
+      parameter[USER_ID] = CUR_USERID!;
+      String curPin = context
+          .read<UserProvider>()
+          .curPincode;
 
-      debugPrint('section list is $getdata');
-      sectionList.clear();
-      if (!error) {
-        var data = getdata['data'];
 
-        sectionList =
-            (data as List).map((data) => SectionModel.fromJson(data)).toList();
-      } else {
-        if (curPin != '') context.read<UserProvider>().setPincode('');
-        setSnackbar(msg!, context);
-      }
+      if (curPin != '') parameter[ZIPCODE] = curPin;
 
-      context.read<HomeProvider>().setSecLoading(false);
-    }, onError: (error) {
-      setSnackbar(error.toString(), context);
-      context.read<HomeProvider>().setSecLoading(false);
-    });
+      apiBaseHelper.postAPICall(getSectionApi, parameter).then((getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+
+        //  debugPrint('section list is $getdata');
+        sectionList.clear();
+        if (!error) {
+          var data = getdata['data'];
+
+          sectionList =
+              (data as List)
+                  .map((data) => SectionModel.fromJson(data))
+                  .toList();
+        } else {
+          if (curPin != '') context.read<UserProvider>().setPincode('');
+          setSnackbar(msg!, context);
+        }
+
+        context.read<HomeProvider>().setSecLoading(false);
+      }, onError: (error) {
+        setSnackbar(error.toString(), context);
+        context.read<HomeProvider>().setSecLoading(false);
+      });
+    }else{
+     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+    }
   }
 
   void getSetting() {
@@ -1226,8 +1240,8 @@ class _HomePageState extends State<HomePage>
           if (REFER_CODE == null || REFER_CODE == '' || REFER_CODE!.isEmpty) {
             generateReferral();
           }
-          debugPrint(
-              "balance i s${getdata['data']['user_data'][0]['balance']}");
+         // debugPrint(
+         //     "balance i s${getdata['data']['user_data'][0]['balance']}");
           context.read<UserProvider>().setCartCount(
               getdata['data']['user_data'][0]['cart_total_items'].toString());
           context

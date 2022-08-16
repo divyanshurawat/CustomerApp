@@ -68,6 +68,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     getSingature();
     _onVerifyCode();
 
+
     Future.delayed(const Duration(seconds: 60)).then((_) {
       _isClickable = true;
     });
@@ -405,6 +406,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       Provider.of<UserProvider>(context, listen: false);
       userProvider.setName(mobile ?? '');
       userProvider.setEmail(email ?? '');
+              userProvider.setUserId(id ?? '');
       userProvider.setProfilePic('' ?? '');
 
       SettingProvider settingProvider =
@@ -413,7 +415,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       settingProvider.saveUserDetail(id!, mobile, email, mobile, "", "",'',"",
           '', '', latitude, longitude, '', context);
 
-      print("DOnw");
+
 
      Navigator.pushReplacement(
          context, MaterialPageRoute(builder: (context) => HomePage()));
@@ -470,12 +472,11 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     try {
       var data = {
         MOBILE:widget.mobile,
-        FCM_ID:token,
         NAME: widget.name,
-        EMAIL: widget.email,
+        EMAIL: widget.email==null?'':widget.email,
         ADDRESS:widget.address,
-        GSTNO:widget.gstno.toString(),
-        AADHAAR:widget.aadhaar.toString(),
+        GSTNO:'',
+        AADHAAR:widget.aadhaar==null?'':widget.aadhaar.toString(),
         PASSWORD: widget.password,
         COUNTRY_CODE: widget.countrycode,
         REFERCODE: widget.referCode,

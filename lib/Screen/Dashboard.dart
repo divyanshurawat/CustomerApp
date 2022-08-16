@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:eshop_multivendor/Helper/call_button.dart';
+import 'package:eshop_multivendor/Provider/SettingProvider.dart';
 import 'package:eshop_multivendor/Screen/MyOrder.dart';
 import 'package:eshop_multivendor/widgets/product_details_new.dart';
 import 'package:eshop_multivendor/Helper/Color.dart';
@@ -61,11 +62,14 @@ class _HomePageState extends State<Dashboard> with TickerProviderStateMixin {
       statusBarIconBrightness: Brightness.light,
     ));
 
+
+
     initDynamicLinks();
     _tabController = TabController(
       length: 5,
       vsync: this,
     );
+
     if(widget.sentIndex!=null){
     //  print("### ${widget.sentIndex}");
 
@@ -167,41 +171,57 @@ class _HomePageState extends State<Dashboard> with TickerProviderStateMixin {
   Future<void> getProduct(String id, int index, int secPos, bool list) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      try {
-        var parameter = {
-          ID: id,
-        };
+      if(CUR_USERID!=null) {
+        try {
+          var parameter = {
+            ID: id,
+          };
 
-        // if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
-        Response response =
-            await post(getProductApi, headers: headers, body: parameter)
-                .timeout(const Duration(seconds: timeOut));
+          // if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
+          Response response =
+          await post(getProductApi, headers: headers, body: parameter)
+              .timeout(const Duration(seconds: timeOut));
 
-        var getdata = json.decode(response.body);
-        bool error = getdata['error'];
-        String msg = getdata['message'];
-        if (!error) {
-          var data = getdata['data'];
+          var getdata = json.decode(response.body);
+          bool error = getdata['error'];
+          String msg = getdata['message'];
+          if (!error) {
+            var data = getdata['data'];
 
-          List<Product> items = [];
+            List<Product> items = [];
 
-          items = (data as List).map((data) => Product.fromJson(data)).toList();
+            items =
+                (data as List).map((data) => Product.fromJson(data)).toList();
 
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) => ProductDetail1(
-                    index: list ? int.parse(id) : index,
-                    model: list
-                        ? items[0]
-                        : sectionList[secPos].productList![index],
-                    secPos: secPos,
-                    list: list,
-                indexPage: _selBottom,
-                  )));
-        } else {
-          if (msg != 'Products Not Found !') setSnackbar(msg, context);
+            Navigator.of(context).push(CupertinoPageRoute(
+                builder: (context) =>
+                    ProductDetail1(
+                      index: list ? int.parse(id) : index,
+                      model: list
+                          ? items[0]
+                          : sectionList[secPos].productList![index],
+                      secPos: secPos,
+                      list: list,
+                      indexPage: _selBottom,
+                    )));
+          } else {
+            if (msg != 'Products Not Found !') setSnackbar(msg, context);
+          }
+        } on TimeoutException catch (_) {
+          setSnackbar(getTranslated(context, 'somethingMSg')!, context);
         }
-      } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      }else{
+        if (mounted) {
+          setState(() {
+
+          });
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(builder: (context) => const Login()),
+            );
+          });
+        }
       }
     } else {
       {
@@ -224,41 +244,42 @@ class _HomePageState extends State<Dashboard> with TickerProviderStateMixin {
         }
         return true;
       },
-      child: Scaffold(
 
-        floatingActionButton: FloatingActionButton(onPressed: () { 
-          call_button();
-        },
-          child: Image.asset("assets/images/contact.png"),
-          backgroundColor: colors.primary,
-          
-        ),
-        extendBodyBehindAppBar: false,
-        extendBody: false,
-        backgroundColor: Theme.of(context).colorScheme.lightWhite,
-        appBar:_selBottom==2?const PreferredSize(child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(""),
-        ), preferredSize: Size.fromHeight(10.0)):_getAppBar()
-            ,
-        body: SafeArea(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              HomePage(),
-              const AllCategory(),
-              //Sale(),
-              const MyOrder(fromDashboard: true,),
-              Cart(
-                fromBottom: true,
-              ),
-              MyProfile(
-                userUpdate: widget.userUpdate,
-              ),
-            ],
-          ),
+      child:  Scaffold(
 
-          /*Stack(
+              floatingActionButton: FloatingActionButton(onPressed: () {
+                call_button();
+              },
+                child: Image.asset("assets/images/contact.png"),
+                backgroundColor: colors.primary,
+
+              ),
+              extendBodyBehindAppBar: false,
+              extendBody: false,
+              backgroundColor: Theme.of(context).colorScheme.lightWhite,
+              appBar:_selBottom==2?const PreferredSize(child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(""),
+              ), preferredSize: Size.fromHeight(10.0)):_getAppBar()
+              ,
+              body: SafeArea(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    HomePage(),
+                    const AllCategory(),
+                    //Sale(),
+                    const MyOrder(fromDashboard: true,),
+                    Cart(
+                      fromBottom: true,
+                    ),
+                    MyProfile(
+                      userUpdate: widget.userUpdate,
+                    ),
+                  ],
+                ),
+
+                /*Stack(
             children: [
               Align(
                 alignment: Alignment.center,
@@ -268,7 +289,7 @@ class _HomePageState extends State<Dashboard> with TickerProviderStateMixin {
                   alignment: Alignment.bottomCenter,
                   child: Container(height: 70, child: _getBottomBar())),
               */
-          /*  Align(
+                /*  Align(
                 alignment: Alignment.topCenter,
                 child: _getAppBar()
               ),*/ /*
@@ -279,8 +300,10 @@ class _HomePageState extends State<Dashboard> with TickerProviderStateMixin {
               )*/ /*
             ],
           ),*/
-        ),
-        bottomNavigationBar: _getBottomBar(),
+              ),
+              bottomNavigationBar: _getBottomBar(),
+
+
       ),
     );
   }

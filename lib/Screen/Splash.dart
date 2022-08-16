@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
+import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Screen/Intro_Slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Helper/Color.dart';
 import '../Helper/Session.dart';
 import '../Helper/String.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'Login.dart';
 
 //splash screen of app
 class Splash extends StatefulWidget {
@@ -49,25 +53,21 @@ class _SplashScreen extends State<Splash> {
             height: double.infinity,
             decoration: back(),
             child: Center(
-
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                    color: Color(0xff1273ba),
-                  ),
-                  height: 200,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  color: Color(0xff1273ba),
+                ),
+                height: 200,
+                width: 200,
+                child: Image.asset(
+                  'assets/images/StepLogo.jpeg',
                   width: 200,
-
-                  child: Image.asset(
-                    'assets/images/StepLogo.jpeg',
-                    width: 200,
-                    height: 200,
-                  ),
+                  height: 200,
                 ),
               ),
-
+            ),
           ),
-
         ],
       ),
     );
@@ -79,12 +79,21 @@ class _SplashScreen extends State<Splash> {
   }
 
   Future<void> navigationPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? v = await prefs.getString(ID);
+
     SettingProvider settingsProvider =
-    Provider.of<SettingProvider>(context, listen: false);
+        Provider.of<SettingProvider>(context, listen: false);
 
     bool isFirstTime = await settingsProvider.getPrefrenceBool(ISFIRSTTIME);
+
     if (isFirstTime) {
-      Navigator.pushReplacementNamed(context, '/home');
+      if (v == null || v == '') {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Login()));
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     } else {
       Navigator.pushReplacement(
           context,
